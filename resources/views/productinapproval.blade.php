@@ -21,60 +21,52 @@
           </div>
           </div>
        
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Prodect Title</th>
-                    <th>Prodect Image</th>
-                    <th>productPrice</th>
-                    <th>productMRPPrice</th>
-                    <th>productInStock</th>
-                  
-                    {{-- <th>Created Date</th> --}}
-                    <th>Action</th>
-                    {{-- <th>Delete</th> --}}
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($products as $product)
-                    <tr>
-                        <td>
-                            <p class="card-text"> {{ $product['prodectTitle'] }}</p>
-                        </td>
-                        <td>
-                            @if(is_array($product['prodectImage']) && count($product['prodectImage']) > 0)
-                                @if($product['prodectImage'][0]) <!-- Ensure the first image is not null -->
-                                    <img src="{{ $product['prodectImage'][0] }}" class="img-fluid" height="80px" width="80px" />
-                                @endif
-                            @else
-                                <img src="{{ $product['prodectImage'] }}" class="img-fluid" height="80px" width="80px" />
-                            @endif
-                        </td>
-                        <td>
-                            <h5 class="card-title">{{ $product['productPrice'] }}</h5>
-                        </td>
-                       <td>
-                            <p class="card-text"> {{ $product['productMRPPrice'] }}</p>
-                        </td>
-                        
-                        <td>
-                            <p class="card-text">{{ $product['productInStock'] ? 'Yes' : 'No' }}</p>
-                        </td>
-                        {{-- <td>{{ $product['createdDate'] }}</td> --}}
-                        <td>
-                            <a href="{{ route('product.approve', $product['productId']) }}" class="btn btn-primary">Approve</a> <!-- Link to the updateproduct route with productId -->
-                        </td>
-                        {{-- <td>
-                            <form action="" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </td> --}}
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+          @if(isset($message))
+          <div class="mx-2 alert alert-info alert-dismissible fade show shadow-sm p-4 rounded mb-4 text-center" role="alert">
+            <h4 class="alert-heading">Notice</h4>
+            <p>{{ $message }}</p>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+      @else
+          <table class="table">
+              <thead>
+                  <tr>
+                      <th>Product Title</th>
+                      <th>Product Image</th>
+                      <th>Product Price</th>
+                      <th>Product MRP Price</th>
+                      <th>Product SKU</th>
+                      <th>Vendor Name</th>
+                      <th>Vendor Email & Mobile No</th>
+                      <th>Approve</th>
+                      <th>Cancel</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  @foreach ($products as $product)
+                      <tr>
+                          <td>{{ $product['prodectTitle'] }}</td>
+                          <td>
+                              <img src="{{ $product['prodectImage'] }}" class="img-fluid" height="80px" width="80px" />
+                          </td>
+                          <td>{{ $product['productPrice'] }}</td>
+                          <td>{{ $product['productMRPPrice'] }}</td>
+                          <td>{{ $product['productSKU'] }}</td>
+                          <td>{{ $product['vendorName'] }}</td>
+                          <td>{{ $product['vendorEmailPlusMobileNo'] }}</td>
+                          <td>
+                              <a href="{{ route('product.approve', $product['productId']) }}" class="btn btn-primary">Approve</a>
+                          </td>
+                          <td>
+                              <a href="{{ route('product.cancelapprove', $product['productId']) }}" class="btn btn-danger">Cancel</a>
+                          </td>
+                      </tr>
+                  @endforeach
+              </tbody>
+          </table>
+      @endif
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>

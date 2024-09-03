@@ -9,38 +9,104 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\LengthAwarePaginator;
-
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ApiController extends Controller
 {
     public function getData(Request $request)
     {
         try {
+            // Fetch all vendors from API
             $response = Http::withOptions(['verify' => base_path('cacert.pem')])
                 ->get('https://crowdrobapi.tech/api/User/GetAllVendor');
-
-                if ($response->successful()) {
-                    $data = $response->json();
-
-                    // 
-                    $currentPage = LengthAwarePaginator::resolveCurrentPage();
-                    $itemCollection = collect($data);
-                    $perPage = 10;
-                    $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
-                    $paginatedItems= new LengthAwarePaginator($currentPageItems , count($itemCollection), $perPage);
-                    $paginatedItems->setPath($request->url());
-
-                    // 
-                    $username = session('username');
-                return view('allvendor', ['data' => $paginatedItems], compact('username'));
-                } else {
+    
+            if ($response->successful()) {
+                $data = $response->json();
+                
+                // Retrieve search query from request
+                $search = $request->input('search');
+        
+                // Filter vendors based on search criteria
+                if ($search) {
+                    $data = array_filter($data, function ($vendor) use ($search) {
+                        return stripos($vendor['firstName'], $search) !== false ||
+                               stripos($vendor['lastName'], $search) !== false ||
+                               stripos($vendor['email'], $search) !== false ||
+                               stripos($vendor['phoneNumber'], $search) !== false ||
+                               stripos($vendor['shopName'], $search) !== false;
+                    });
+                }
+    
+                // Paginate filtered data
+                $currentPage = LengthAwarePaginator::resolveCurrentPage();
+                $itemCollection = collect($data);
+                $perPage = 10;
+                $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+                $paginatedItems = new LengthAwarePaginator($currentPageItems , count($itemCollection), $perPage);
+                $paginatedItems->setPath($request->url());
+    
+                // Retrieve username from session (if needed)
+                $username = session('username');
+    
+                // Render view with paginated data
+                return view('allvendor', ['data' => $paginatedItems, 'username' => $username]);
+            } else {
                 return view('api.error');
             }
         } catch (RequestException $e) {
             return view('api.error');
         }
-
     }
+
+
+    public function getvendororderdata(Request $request)
+    {
+        try {
+            // Fetch all vendors from API
+            $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+                ->get('https://crowdrobapi.tech/api/User/GetAllVendor');
+    
+            if ($response->successful()) {
+                $data = $response->json();
+                
+                // Retrieve search query from request
+                $search = $request->input('search');
+        
+                // Filter vendors based on search criteria
+                if ($search) {
+                    $data = array_filter($data, function ($vendor) use ($search) {
+                        return stripos($vendor['firstName'], $search) !== false ||
+                               stripos($vendor['lastName'], $search) !== false ||
+                               stripos($vendor['email'], $search) !== false ||
+                               stripos($vendor['phoneNumber'], $search) !== false ||
+                               stripos($vendor['shopName'], $search) !== false;
+                    });
+                }
+    
+                // Paginate filtered data
+                $currentPage = LengthAwarePaginator::resolveCurrentPage();
+                $itemCollection = collect($data);
+                $perPage = 10;
+                $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+                $paginatedItems = new LengthAwarePaginator($currentPageItems , count($itemCollection), $perPage);
+                $paginatedItems->setPath($request->url());
+    
+                // Retrieve username from session (if needed)
+                $username = session('username');
+    
+                // Render view with paginated data
+                return view('vendororder', ['data' => $paginatedItems, 'username' => $username]);
+            } else {
+                return view('api.error');
+            }
+        } catch (RequestException $e) {
+            return view('api.error');
+        }
+    }
+
+
+
 
     public function getvendorbyid($id){
         try {
@@ -115,7 +181,17 @@ public function getallStore(Request $request){
             $stores = $response->json();
             $totalStores = count($stores);
 
-
+            $search = $request->input('search');
+            if ($search) {
+                $stores = array_filter($stores, function ($store) use ($search) {
+                    return stripos($store['street'], $search) !== false ||
+                         stripos($store['street2'], $search) !== false ||
+                           stripos($store['storeName'], $search) !== false ||
+                           stripos($store['phoneNumber'], $search) !== false ||
+                           stripos($store['city'], $search) !== false ||
+                           stripos($store['state'], $search) !== false;
+                });
+            }
             // 
             $currentPage = LengthAwarePaginator::resolveCurrentPage();
             $itemCollection = collect($stores);
@@ -174,6 +250,7 @@ public function deleteStoreById($id)
         return redirect()->back()->with('error', 'Error deleting store');
     }
 }
+
 public function editProduct($id)
 {
     try {
@@ -191,60 +268,93 @@ public function editProduct($id)
         return view('api.error');
     }
 }
-  
+
 public function updateProduct(Request $request, $id)
 {
     try {
+        // Validate the request inputs
+        $request->validate([
+            'prodectTitle' => 'required|string|max:255',
+            'productPrice' => 'required|numeric',
+            'productShortDescription' => 'required|string',
+            'productDescription' => 'required|string',
+            'categoryId' => 'required|integer',
+            'prodectImage' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'prodectImage1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'prodectImage2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'prodectImage3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'prodectImage4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'prodectImage5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'prodectImage6' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'prodectImage7' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
         // Prepare data for product update
         $data = [
             'productId' => $id,
-            'prodectTitle' => $request->input('prodectTitle'),
-            'productVM' => $request->input('productVM', ''), // Default value is an empty string
-            'productPrice' => $request->input('productPrice'),
-            'productShortDescription' => $request->input('productShortDescription'),
-            'productDescription' => $request->input('productDescription'),
-            'productSKU' => $request->input('productSKU'),
-            'subCategory' => $request->input('subCategory'),
-            'vendorSubCategory' => $request->input('vendorSubCategory'),
-            'productInStock' => $request->input('productInStock') ? 'true' : 'false', // Ensure this is a string
-            'categoryId' => (int)$request->input('categoryId'),
-            'productBrands' => $request->input('productBrands'),
-            // 'modifiedDate' => now()->toISOString()
+            'prodectTitle' => $request->input('prodectTitle', ''),
+            'productVM' => $request->input('productVM', ''),
+            'productPrice' => $request->input('productPrice', ''),
+            'productShortDescription' => $request->input('productShortDescription', ''),
+            'productDescription' => $request->input('productDescription', ''),
+            'productSKU' => $request->input('productSKU', ''),
+            'subCategory' => $request->input('subCategory', ''),
+            'vendorSubCategory' => $request->input('vendorSubCategory', ''),
+            'productInStock' => $request->has('productInStock') ? 'true' : 'false',
+            'categoryId' => (int) $request->input('categoryId', 0),
+            'productBrands' => $request->input('productBrands', ''),
         ];
 
-        // Handle image uploads only if the files are present
-        $imageFields = ['prodectImage', 'prodectImage1', 'prodectImage2', 'prodectImage3', 'prodectImage4', 'prodectImage5', 'prodectImage6', 'prodectImage7'];
+        // Handle image uploads
+        $imageFields = [
+            'prodectImage', 'prodectImage1', 'prodectImage2',
+            'prodectImage3', 'prodectImage4', 'prodectImage5',
+            'prodectImage6', 'prodectImage7'
+        ];
 
+        // foreach ($imageFields as $imageField) {
+        //     if ($request->hasFile($imageField)) {
+        //         $imageContent = base64_encode(file_get_contents($request->file($imageField)->getRealPath()));
+        //         $imageData = 'data:image/jpeg;base64,' . $imageContent;
+        //         $data[$imageField] = $imageData;
+        //     } else {
+        //         $data[$imageField] = $request->input("current$imageField", '');
+        //     }
+        // }
         foreach ($imageFields as $imageField) {
             if ($request->hasFile($imageField)) {
+                // Process the file upload
                 $imageContent = base64_encode(file_get_contents($request->file($imageField)->getRealPath()));
-                $imageData = 'data:image/jpeg;base64,' . $imageContent;
+                // $imageData = 'data:image/jpeg;base64,' . $imageContent;
+                $imageData =  $imageContent;
                 $data[$imageField] = $imageData;
-            } else {
-                // Include the existing image URL in the data array
+
+            } elseif ($request->filled("current$imageField")) {
+                // Use the current image data if no new image is uploaded
                 $data[$imageField] = $request->input("current$imageField");
+            } else {
+                // Ensure the field is set to an empty string or null if necessary
+                $data[$imageField] = ''; // or null depending on your API requirements
             }
         }
 
-        // if ($request->input('productVM')) {
-        //     $data['productVM'] = $request->input('productVM');
-        // } else {
-        //     $data['productVM'] = ''; // Default value
-        // }
 
+        //  dd($data);
 
-    //    dd($data);
         // Send request to update product with both details and images
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
             ->put("https://crowdrobapi.tech/api/Product/UpdateProductById", $data);
 
-            // dd($response->json());
+            //  dd($response->json());
+
         if ($response->successful()) {
             return redirect('allproducts')->with('success', 'Product updated successfully');
         } else {
+            Log::error('API request failed: ' . $response->status() . ' - ' . $response->body());
             return redirect()->back()->with('error', 'Failed to update product');
         }
     } catch (\Exception $e) {
+        Log::error('Exception occurred: ' . $e->getMessage());
         return redirect()->back()->with('error', 'Error updating product');
     }
 }
@@ -271,6 +381,7 @@ public function updateProduct(Request $request, $id)
             return view('api.error');
         }
     }
+
 
     public function getallproductprice(){
         try {
@@ -367,51 +478,65 @@ public function updateProduct(Request $request, $id)
     }
     
 
-public function getallusers(Request $request){
+
+public function getallusers(Request $request)
+{
     try {
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
             ->get('https://crowdrobapi.tech/api/User/User/GetAllUser');
 
         if ($response->successful()) {
             $users = $response->json();
-           
-            $totalUsers = count($users);
-            // dd($users);
 
-            // 
+            // Ensure the users array is not empty
+            if (!empty($users)) {
+                // Sort users by registration time in descending order
+                usort($users, function ($a, $b) {
+                    $aCreatedAt = isset($a['createdAt']) ? strtotime($a['createdAt']) : 0;
+                    $bCreatedAt = isset($b['createdAt']) ? strtotime($b['createdAt']) : 0;
 
-// Get current page form url e.g. &page=1
-$currentPage = LengthAwarePaginator::resolveCurrentPage();
+                    // Log the createdAt values for debugging
+                    Log::debug("Sorting Users", ['aCreatedAt' => $aCreatedAt, 'bCreatedAt' => $bCreatedAt]);
 
-// Create a new Laravel collection from the array data
-$itemCollection = collect($users);
+                    return $bCreatedAt - $aCreatedAt;
+                });
+            }
 
-// Define how many items we want to be visible in each page
-$perPage = 10;
+            // Get the search query
+            $search = $request->input('search');
 
-// Slice the collection to get the items to display in current page
-$currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+            // Filter users if a search query is provided
+            if ($search) {
+                $users = array_filter($users, function ($user) use ($search) {
+                    return stripos($user['username'], $search) !== false ||
+                           stripos($user['firstName'], $search) !== false ||
+                           stripos($user['lastName'], $search) !== false ||
+                           stripos($user['email'], $search) !== false ||
+                           stripos($user['phoneNumber'], $search) !== false;
+                });
+            }
 
-// Create our paginator and pass it to the view
-$paginatedItems= new LengthAwarePaginator($currentPageItems , count($itemCollection), $perPage);
+            // Pagination
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $itemCollection = collect($users);
+            $perPage = 10;
+            $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+            $paginatedItems = new LengthAwarePaginator($currentPageItems, count($itemCollection), $perPage);
+            $paginatedItems->setPath($request->url());
 
-// set url path for generated links
-$paginatedItems->setPath($request->url());
-
-
-            // 
+            // View
             $username = session('username');
-            // Iterate over each user and access the username
-           return view('allusers', ['users' => $paginatedItems], compact('username'));
+            return view('allusers', ['users' => $paginatedItems], compact('username'));
         } else {
             return view('api.error');
         }
-
-        // return view('allusers', ['users' => $users, 'totalUsers' => $totalUsers]);
     } catch (RequestException $e) {
         return view('api.error');
     }
 }
+
+
+
 
 public function getUserByEmail($email){
     try {
@@ -503,17 +628,17 @@ public function update(Request $request, $email)
 
 public function viewvendor($id)
 {
-
     $vendor = [];
     $store = [];
     $product = [];
+    $cancelapproval = [];
+
     try {
-        $response = Http::withoptions(['verify' => base_path('cacert.pem')])
+        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
             ->get("https://crowdrobapi.tech/api/User/GetVendorById?registerVendorUserId={$id}");
 
         if ($response->successful()) {
             $vendor = $response->json();
-        //   dd($vendor);
         } else {
             return view('Please Register as a vendor first');
         }
@@ -522,12 +647,11 @@ public function viewvendor($id)
     }
 
     try {
-        $response2 = Http::withoptions(['verify' => base_path('cacert.pem')])
+        $response2 = Http::withOptions(['verify' => base_path('cacert.pem')])
             ->get("https://crowdrobapi.tech/api/Store/GetStoreByVendorId?VendorId={$id}");
 
         if ($response2->successful()) {
             $store = $response2->json();
-            //  dd($store);
         } else {
             return view('api.error');
         }
@@ -536,9 +660,26 @@ public function viewvendor($id)
     }
 
     try {
+        // Get Cancel Approval Products
+        $response4 = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->get("https://crowdrobapi.tech/api/Product/GetAllNotApprovedProductByVendorId?VendorId={$id}");
+            if ( isset($response4['title'])) {
+                $cancelapproval = $response4->json();
+                //   dd($product);
+            }else if ($response4->successful())
+            {
+                $cancelapproval = $response4->json();
+                // dd($product);
+            }
+    } catch (\Exception $e) {
+        // Handle exception
+        return view('api.error', ['error' => $e->getMessage()]);
+    }
+
+    try {
         $response3 = Http::withoptions(['verify' => base_path('cacert.pem')])
             ->get("https://crowdrobapi.tech/api/Product/GetProductByVendorId?VendorId={$id}");
-            // dd($response3);
+            $product = $response3->json();
         if ( isset($response3['title'])) {
             $product = $response3->json();
             //   dd($product);
@@ -555,7 +696,12 @@ public function viewvendor($id)
         return view('api.error');
     }
 
-    return view('vendordetails', ['vendor' => $vendor, 'store' => $store, 'product' => $product]);
+    return view('vendordetails', [
+        'vendor' => $vendor,
+        'store' => $store,
+        'product' => $product,
+        'cancelapproval' => $cancelapproval
+    ]);
 }
    
     // }
@@ -567,7 +713,7 @@ public function viewvendor($id)
             $vendorsResponse = Http::withOptions(['verify' => base_path('cacert.pem')])
                 ->get('https://crowdrobapi.tech/api/User/GetAllVendor');
     
-                // dd($vendorsResponse->json());
+                //  dd($vendorsResponse->json());
             if ($vendorsResponse->successful()) {
                 $vendores = $vendorsResponse->json();
                 $totalVendors = count($vendores);
@@ -579,6 +725,8 @@ public function viewvendor($id)
             // Get products data
             $productsResponse = Http::withOptions(['verify' => base_path('cacert.pem')])
                 ->get('https://crowdrobapi.tech/api/Product/GetAllProduct');
+
+                
     
             if ($productsResponse->successful()) {
                 $products = $productsResponse->json();
@@ -645,34 +793,46 @@ return view('api.error');
             return view('api.error');
         }
     }
+
+    
     public function getAllProductData(Request $request)
+
     {
-        try {
-            $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-                ->get('https://crowdrobapi.tech/api/Product/GetAllProduct');
-             if ($response->successful()) {
-                $products = $response->json();
-                $allproducts = count($products);
-                // dd($products);
-                // 
 
-   // Get current page form url e.g. &page=1
-   $currentPage = LengthAwarePaginator::resolveCurrentPage();
-   $itemCollection = collect($products);
-   $perPage = 10;
-   $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
-   $paginatedItems= new LengthAwarePaginator($currentPageItems , count($itemCollection), $perPage);
-   $paginatedItems->setPath($request->url());
-
-                // 
-                $username = session('username');
-                return view('allproducts', ['products' =>  $paginatedItems, 'allproducts' => $allproducts],  compact('username'));
-            } else {
-                return view('api.error');
+            try {
+                $searchQuery = $request->input('search'); // Get the search query
+        
+                if ($searchQuery) {
+                    // Call the search API with the search query
+                    $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+                        ->get('https://crowdrobapi.tech/api/Product/SearchProduct', [
+                            'Product' => $searchQuery
+                        ]);
+                } else {
+                    // Call the API to get all products if no search query is present
+                    $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+                        ->get('https://crowdrobapi.tech/api/Product/GetAllProduct');
+                }
+        
+                if ($response->successful()) {
+                    $products = $response->json();
+                    $allproducts = count($products);
+                    $username = session('username');
+                    // Pagination setup
+                    $currentPage = LengthAwarePaginator::resolveCurrentPage();
+                    $itemCollection = collect($products);
+                    $perPage = 10;
+                    $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+                    $paginatedItems = new LengthAwarePaginator($currentPageItems, count($itemCollection), $perPage);
+                    $paginatedItems->setPath($request->url());
+        
+                    return view('allproducts', ['products' => $paginatedItems, 'allproducts' => $allproducts], compact('username'));
+                } else {
+                    return view('api.error')->withErrors('Failed to fetch products.');
+                }
+            } catch (\Exception $e) {
+                return view('api.error')->withErrors('An error occurred: ' . $e->getMessage());
             }
-        } catch (RequestException $e) {
-            return view('api.error');
-        }
     }
 
 //  public function getAllProductData(Request $request)
@@ -991,25 +1151,25 @@ public function getAllCategory(){
 // addcareousel
 
 
-public function getAllCategoryforcaraousel(){
-    try {
-        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-            ->get('https://crowdrobapi.tech/api/Category/Category/GetAllCategory');
+// public function getAllCategoryforcaraousel(){
+//     try {
+//         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+//             ->get('https://crowdrobapi.tech/api/Category/Category/GetAllCategory');
 
-        if ($response->successful()) {
-            $products = $response->json();
-            //  dd($products);
+//         if ($response->successful()) {
+//             $products = $response->json();
+//             //  dd($products);
          
-            // Iterate over each user and access the username
-           return view('add_caraosel', ['products' => $products]);
-            return view('api.error');
-        }
+//             // Iterate over each user and access the username
+//            return view('add_caraosel', ['products' => $products]);
+//             return view('api.error');
+//         }
 
-        return view('updatepricebycategories', ['users' => $users, 'products' => $products, 'totalProducts' => $totalProducts], compact('username'));
-    } catch (RequestException $e) {
-        return view('api.error');
-    }
-}
+//         return view('updatepricebycategories', ['users' => $users, 'products' => $products, 'totalProducts' => $totalProducts], compact('username'));
+//     } catch (RequestException $e) {
+//         return view('api.error');
+//     }
+// }
 
 // GetCareousel
 
@@ -1025,6 +1185,31 @@ public function getAllCategoryforcaraousel(){
             $username = session('username');
             // dd($data);
             return view('caraousel', ['data' => $data], compact('username'));
+        }
+
+    }catch(\Exception $e){
+        return view('api.error');
+    }
+
+ }
+
+
+
+
+//  
+
+public function AdsHomeads(){
+
+    try{
+
+        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+        ->get('https://crowdrobapi.tech//api/HomeSetting/GetHomeAds');
+
+        if($response->successful()){
+            $data = $response->json();
+            $username = session('username');
+            // dd($data);
+            return view('adshome', ['data' => $data], compact('username'));
         }
 
     }catch(\Exception $e){
@@ -1050,6 +1235,26 @@ if($response->successful()){
     return view('api.error');
 }
 }
+
+
+// DeleteHomeAds
+
+
+public function deletehomeads($id){
+
+    try{
+    
+    $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+    ->delete("https://crowdrobapi.tech/api/HomeSetting/DeleteHomeAds?homeAdsID={$id}");
+    
+    if($response->successful()){
+        return redirect('/homeads')->with('success', 'Caraousel Deleted successfully');
+    }
+    }catch(\Exception $e){
+        return view('api.error');
+    }
+    }
+    
 
 
 
@@ -1082,7 +1287,7 @@ public function getsubCategory(){
 public function addSubcategory(Request $request)
 {
     $validatedData = $request->validate([
-        'subCategoryId' => 'required|integer',
+        // 'subCategoryId' => 'required|integer',
         'subCategoryName' => 'required|string',
         'categoryId' => 'required|integer',
     ]);
@@ -1090,7 +1295,7 @@ public function addSubcategory(Request $request)
     try {
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
         ->post("https://crowdrobapi.tech/api/SubCategory/AddSubCategory", [
-            'subCategoryId' => $validatedData['subCategoryId'],
+            // 'subCategoryId' => $validatedData['subCategoryId'],
             'subCategoryName' => $validatedData['subCategoryName'],
             'categoryId' => $validatedData['categoryId'],
         ]);
@@ -1116,10 +1321,15 @@ public function getCategoryforadd(){
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
             ->get('https://crowdrobapi.tech/api/Category/Category/GetAllCategory');
 
+            $response2 = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->get('https://crowdrobapi.tech/api/SubCategory/GetAllSubCategory');
+
+            $subactegory = $response2->json();
+
         if ($response->successful()) {
             $products = $response->json();
         //    dd($products);
-           return view('add_product', ['products' => $products]);
+           return view('add_product', ['products' => $products, 'subactegory' => $subactegory]);
         } else {
             return view('api.error');
         }
@@ -1129,138 +1339,88 @@ public function getCategoryforadd(){
 }
 
 
-
-
-
 public function addProduct(Request $request)
 {
     try {
         // Validate request data
         $validatedData = $request->validate([
-            'productId' => 'required|string',
-            // 'productVM' => 'nullable|string',
             'prodectTitle' => 'required|string',
-            'prodectImage' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048', // Change to file validation
-            'prodectImage1' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048', // Change to file validation
-            'prodectImage2' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048', // Change to file validation
-            'ProdectImage3' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048', // Change to file validation
-            'ProdectImage4' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048', // Change to file validation
-            'ProdectImage5' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048', // Change to file validation
-            'ProdectImage6' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048', // Change to file validation
-            'ProdectImage7' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048', // Change to file validation
+            'prodectImage' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'prodectImage1' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'prodectImage2' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'ProdectImage3' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'ProdectImage4' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'ProdectImage5' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'ProdectImage6' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'ProdectImage7' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'productPrice' => 'required|string',
-            // 'productDiscount' => 'required|string',
-            // 'productMRPPrice' => 'required|string',
-            // 'productDiscountPrice' => 'required|string',
-            
-    
-
             'productShortDescription' => 'nullable|string',
             'productDescription' => 'required|string',
             'productSKU' => 'nullable|string',
-            'productApproval' => 'required|string', // Change to boolean if needed
-            'productInStock' => 'required|string', // Change to boolean if needed
-            'categoryId' => 'required|string',
-            'subCategory' => 'required|string',
-            'vendorSubCategory' => 'required|string',
+          'productInStock' => 'required|boolean', // Updated to boolean
+            'categoryId' => 'required|integer', // Updated to integer
+            'subCategory' => 'nullable|string',
+            'vendorSubCategory' => 'nullable|string',
             'productBrands' => 'required|string',
-            'registerVendorUserId' => 'required|string',
+            'registerVendorUserId' => 'required|integer', // Updated to integer
         ]);
 
         // Process image uploads
-        $categoryImage = '';
         $imageFields = ['prodectImage', 'prodectImage1', 'prodectImage2', 'ProdectImage3', 'ProdectImage4', 'ProdectImage5', 'ProdectImage6', 'ProdectImage7'];
         foreach ($imageFields as $field) {
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
                 $imageData = base64_encode(file_get_contents($file));
-                $categoryImage = 'data:image/png;base64,' . $imageData;
-                // Replace original file path with base64 encoded image data
-                $validatedData[$field] = $categoryImage;
+                // $validatedData[$field] = 'data:image/png;base64,' . $imageData;
+                $validatedData[$field] = $imageData;
             }
         }
 
-        $productApproval = filter_var($validatedData['productApproval'], FILTER_VALIDATE_BOOLEAN);
-        $productInStock = $validatedData['productInStock'] === 'yes';
+        $categoryId = (int)$validatedData['categoryId'];
+        $registerVendorUserId = (int)$validatedData['registerVendorUserId'];
+        Log::info('registerVendorUserId:', ['registerVendorUserId' => $registerVendorUserId]);
         // Prepare the data array to be sent in the API request
-
-   
-
-
-        // Set default value of 0 if productDiscount is empty or not provided
-        $productMRPPrice = $request->input('productMRPPrice', 0);
-        $productDiscountPrice = $request->input('productDiscountPrice', 0);
-        $productDiscount = $request->input('productDiscount', 0);
-        
-
         $postData = [
-            'productApproval' => $productApproval,
-            'productId' => $validatedData['productId'],
-            // 'productDiscount' => $validatedData['productDiscount'],
-            // 'productMRPPrice' => $validatedData['productMRPPrice'],
-            // 'productDiscountPrice' => $validatedData['productDiscountPrice'],
+            'productId' => 0,
             'prodectTitle' => $validatedData['prodectTitle'],
-            'prodectImage' => $validatedData['prodectImage'],
-            // 'prodectImage1' => $validatedData['prodectImage1'],
-            'prodectImage1' => $request->input('prodectImage1'),
-            // 'prodectImage2' => $validatedData['prodectImage2'],
-            'prodectImage2' => $request->input('prodectImage2'),
-            // 'ProdectImage3' => $validatedData['ProdectImage3'],
-            'ProdectImage3' => $request->input('ProdectImage3'),
-            // 'ProdectImage4' => $validatedData['ProdectImage4'],
-            'ProdectImage4' => $request->input('ProdectImage4'),
-            // 'ProdectImage5' => $validatedData['ProdectImage5'],
-            'ProdectImage5' => $request->input('ProdectImage5'),
-            // 'ProdectImage6' => $validatedData['ProdectImage6'],
-            'ProdectImage6' => $request->input('ProdectImage6'),
-            // 'ProdectImage7' => $validatedData['ProdectImage7'],
-            'ProdectImage7' => $request->input('ProdectImage7'),
+            'prodectImage' => $validatedData['prodectImage'] ?? '',
+            'prodectImage1' => $validatedData['prodectImage1'] ?? '',
+            'prodectImage2' => $validatedData['prodectImage2'] ?? '',
+            'ProdectImage3' => $validatedData['ProdectImage3'] ?? '',
+            'ProdectImage4' => $validatedData['ProdectImage4'] ?? '',
+            'ProdectImage5' => $validatedData['ProdectImage5'] ?? '',
+            'ProdectImage6' => $validatedData['ProdectImage6'] ?? '',
+            'ProdectImage7' => $validatedData['ProdectImage7'] ?? '',
             'productPrice' => $validatedData['productPrice'],
-            // 'productVM' => $validatedData['productVM'],
-            'productShortDescription' => $validatedData['productShortDescription'],
+            'productShortDescription' => $validatedData['productShortDescription'] ?? '',
             'productDescription' => $validatedData['productDescription'],
-            'productSKU' => $validatedData['productSKU'],
-            // 'productApproval' => $validatedData['productApproval'],
-            // 'productInStock' => $validatedData['productInStock'],
-            'productInStock' => $productInStock,
-            'categoryId' => $validatedData['categoryId'],
-            'subCategory' => $validatedData['subCategory'],
-            'vendorSubCategory' => $validatedData['vendorSubCategory'],
+            'productSKU' => $validatedData['productSKU'] ?? '',
+            'subCategory' => $validatedData['subCategory'] ?? '',
+            'vendorSubCategory' => $validatedData['vendorSubCategory'] ?? '',
+           'productInStock' => $request->input('productInStock') === '1' ? true : false,
+            // 'categoryId' => $validatedData['categoryId'],
+            'categoryId' => $categoryId, 
+          
+          
             'productBrands' => $validatedData['productBrands'],
-            'registerVendorUserId' => $validatedData['registerVendorUserId'],
-            'isTopDeal' => false,
-            'istopTrending' => false,
-            'isTopFeatured' => false,
-            'isTopRated' => false,
-            'productMRPPrice' => $productMRPPrice,
-            'productDiscountPrice' => $productDiscountPrice,
-            'productDiscount' => $productDiscount,
-            
+           
+            'productColor' => 'No Color',
+            'registerVendorUserId' => $registerVendorUserId, 
         ];
 
-        // if (isset($validatedData['productVM'])) {
-        //     $postData['productVM'] = $validatedData['productVM'];
-        // }
-
-        if (isset($validatedData['productVM'])) {
-            $postData['productVM'] = $validatedData['productVM'];
-        } else {
-            $postData['productVM'] = ''; // Default value
-        }
-// dd($postData);
-
+        //  dd(  $postData);
         // Perform API request
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
             ->post('https://crowdrobapi.tech/api/Product/AddProduct', $postData);
-        // dd($response->json());
 
-        //    dd($response->json());
+        // Check response from API
+        //  dd($response->json());
+
         if ($response->successful()) {
-            // Product added successfully
-            // dd($response->json());
             return redirect('allproducts')->with('success', 'Product added successfully');
         } else {
-            // API request failed
+            // Log the response for debugging
+            Log::error('API request failed: ' . $response->status() . ' - ' . $response->body());
             return redirect()->back()->with('error', 'Failed to add product. Please try again.');
         }
     } catch (\Exception $e) {
@@ -1270,11 +1430,16 @@ public function addProduct(Request $request)
     }
 }
 
+
+
+
+
+
 // Store Add
 public function addStore(Request $request)
 {
     $validatedData = $request->validate([
-        'storeId' => 'required|string',
+        // 'storeId' => 'required|string',
         'registerVendorUserId' => 'required|string',
         'storeName' => 'required|string',
         'street' => 'required|string',
@@ -1289,7 +1454,7 @@ public function addStore(Request $request)
     try {
         $response = $response = Http::withOptions(['verify' => base_path('cacert.pem')])
         ->post('https://crowdrobapi.tech/api/Store/AddNewStore', [
-            'storeId' => $validatedData['storeId'],
+            // 'storeId' => $validatedData['storeId'],
             'registerVendorUserId' => $validatedData['registerVendorUserId'],
             'storeName' => $validatedData['storeName'],
             'street' => $validatedData['street'],
@@ -1318,6 +1483,8 @@ public function addStore(Request $request)
     }
 }
 
+
+
 // Enquiry Form
 
 public function submitForm(Request $request)
@@ -1328,6 +1495,7 @@ public function submitForm(Request $request)
         'emailID' => $request->input('emailID'),
         'mobileNo' => $request->input('mobileNo'),
         'messages' => $request->input('messages'),
+        'location' => $request->input('location'),
     ]);
 
     // dd($response->json());
@@ -1343,6 +1511,78 @@ public function submitForm(Request $request)
 
 
 
+
+// 
+
+
+public function exportInquiryDetailsToExcel()
+{
+    try {
+        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->get('https://crowdrobapi.tech/api/User/GetFormInqueries');
+
+        if ($response->successful()) {
+            $enquiry = $response->json();
+
+            // Validate and clean data
+            foreach ($enquiry as &$item) {
+                $item['name'] = $item['name'] ?? '';
+                $item['emailID'] = $item['emailID'] ?? '';
+                $item['mobileNo'] = $item['mobileNo'] ?? '';
+                $item['location'] = $item['location'] ?? '';
+                $item['dateTime'] = isset($item['dateTime']) ? date('Y-m-d H:i:s', strtotime($item['dateTime'])) : '';
+                $item['messages'] = $item['messages'] ?? '';
+            }
+
+            // Create a new Spreadsheet object
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Set the header row
+            $headers = ['Name', 'Email', 'Mobile No', 'Location', 'Date', 'Message'];
+            $columnIndex = 'A';
+
+            foreach ($headers as $header) {
+                $sheet->setCellValue($columnIndex . '1', $header);
+                $sheet->getColumnDimension($columnIndex)->setAutoSize(true); // Auto-size columns
+                $columnIndex++;
+            }
+
+            // Populate the data
+            $rowNumber = 2;
+            foreach ($enquiry as $item) {
+                $sheet->setCellValue('A' . $rowNumber, $item['name']);
+                $sheet->setCellValue('B' . $rowNumber, $item['emailID']);
+                $sheet->setCellValue('C' . $rowNumber, $item['mobileNo']);
+                $sheet->setCellValue('D' . $rowNumber, $item['location']);
+                $sheet->setCellValue('E' . $rowNumber, $item['dateTime']);
+                $sheet->setCellValue('F' . $rowNumber, $item['messages']);
+                $rowNumber++;
+            }
+
+            // Write the spreadsheet to a file
+            $writer = new Xlsx($spreadsheet);
+            $fileName = 'inquiry_details.xlsx';
+            $filePath = storage_path('app/public/' . $fileName);
+            $writer->save($filePath);
+
+            // Clear memory
+            $spreadsheet->disconnectWorksheets();
+            unset($spreadsheet);
+
+            return response()->download($filePath)->deleteFileAfterSend(true);
+        } else {
+            return view('api.error');
+        }
+    } catch (RequestException $e) {
+        return view('api.error');
+    } catch (\Exception $e) {
+        return view('api.error')->with('message', $e->getMessage());
+    }
+}
+
+// 
+
 public function getinquirydetails(Request $request){
     try {
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
@@ -1354,6 +1594,17 @@ public function getinquirydetails(Request $request){
            $totalItems = count($enquiry);
         //  dd($enquiry);
 
+        $search = $request->input('search');
+
+        if ($search) {
+            $enquiry = array_filter($enquiry, function ($enquiry) use ($search) {
+                return stripos($enquiry['name'], $search) !== false ||
+                     stripos($enquiry['emailID'], $search) !== false ||
+                       stripos($enquiry['mobileNo'], $search) !== false ||
+                       stripos($enquiry['location'], $search) !== false;
+                     
+            });
+        }
         
 // Get current page form url e.g. &page=1
 $currentPage = LengthAwarePaginator::resolveCurrentPage();
@@ -1387,15 +1638,20 @@ $paginatedItems->setPath($request->url());
 // Laounch Setting
 
 public function getLaunchSetting()
-    {
-        // Call your API to get the launch setting
-        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-            ->get('https://crowdrobapi.tech/api/LaunchSetting/GetLaunchSetting');
-        
+{
+    // Call your API to get the launch setting
+    $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+        ->get('https://crowdrobapi.tech/api/LaunchSetting/GetLaunchSetting');
+    
+    if ($response->successful()) {
         $launchSetting = $response->json();
-
         return view('launch-setting', compact('launchSetting'));
+    } else {
+        // Handle error appropriately
+        return redirect()->route('launch-setting.show')->with('error', 'Failed to fetch launch setting');
     }
+}
+
 
 
 //     public function updateLaunchSetting(Request $request)
@@ -1409,6 +1665,7 @@ public function getLaunchSetting()
 
 //     return redirect('/launch-setting')->with('success', 'Launch setting updated successfully');
 // }
+
 public function updateLaunchSetting(Request $request)
 {
     // Check if the checkbox is set in the request
@@ -1419,14 +1676,24 @@ public function updateLaunchSetting(Request $request)
 
     // Check if a new image is uploaded
     if ($request->hasFile('adsimage')) {
-        /** @var UploadedFile $file */
         $file = $request->file('adsimage');
         $imageData = base64_encode(file_get_contents($file));
-        $adsImage = 'data:image/png;base64,' . $imageData;
+        $adsImage = $imageData;
     } else {
         // Use the existing image URL from the request
-        $adsImage = $request->input('currentAdsImage', '');
+        $currentAdsImage = $request->input('currentAdsImage', '');
+
+        // Check if the currentAdsImage is a URL and convert it to Base64
+        if (filter_var($currentAdsImage, FILTER_VALIDATE_URL)) {
+            $imageData = file_get_contents($currentAdsImage);
+            $adsImage = base64_encode($imageData);
+        } else {
+            // If it's already Base64, use it as is
+            $adsImage = $currentAdsImage;
+        }
     }
+
+    \Log::debug('Ads Image:', ['adsImage' => $adsImage]);
 
     // Get the additional fields from the request
     $adsUrl = $request->input('adsUrl', '');
@@ -1436,25 +1703,36 @@ public function updateLaunchSetting(Request $request)
     $payload = [
         'launchSettingTemp' => $launchSettingTemp,
         'adsImage' => $adsImage,
-        'adsUrl' => $adsUrl,
-        'adsDescription' => $adsDescription,
+        'adsUrl' => $adsUrl ?: null, // Handle empty strings
+        'adsDescription' => $adsDescription ?: null, // Handle empty strings
     ];
 
-    // Debugging: remove this in production
-    // dd($payload);
+    \Log::debug('Payload:', $payload);
 
     // Call your API to update the launch setting
     $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-        ->put('https://crowdrobapi.tech/api/LaunchSetting/updateLaunchSetting', $payload);
+        ->withHeaders(['Content-Type' => 'application/json'])
+        ->put('https://crowdrobapi.tech/api/LaunchSetting/UpdateLaunchSetting', $payload);
+
+    \Log::debug('API Response:', ['response' => $response->json(), 'status' => $response->status(), 'body' => $response->body()]);
 
     // Check the response and handle accordingly
     if ($response->successful()) {
         return redirect('/dashboard')->with('success', 'Launch setting updated successfully');
     } else {
-        // Handle the error accordingly
+        // Log the error response
+        \Log::error('API Update Error:', ['status' => $response->status(), 'body' => $response->body()]);
         return redirect()->route('launch-setting.show')->with('error', 'Failed to update launch setting');
     }
 }
+
+
+
+
+
+
+
+
 // RESETPASSWORD FORM
 
 public function resetyourpassword(Request $request)
@@ -1520,12 +1798,13 @@ public function getproductforDiscount(){
             return view('api.error');
         }
 
-        return view('updateproductprice', ['users' => $users, 'products' => $products, 'totalProducts' => $totalProducts], compact('username'));
+        // return view('updateproductprice', ['users' => $users, 'products' => $products, 'totalProducts' => $totalProducts], compact('username'));
     } catch (RequestException $e) {
         return view('api.error');
     }
 
 }
+
 
 public function updateproductdiscountprice($id){
 
@@ -1562,7 +1841,7 @@ public function updateDiscountProductPrice(Request $request, $id)
             ]);
 
         if ($response->successful()) {
-            return redirect()->to('/updatemrp')->with('toast_success', 'Product price updated successfully');
+            return redirect()->to('/updateproductdiscount')->with('success', 'Product discount price updated successfully');
         } else {
             return redirect()->back()->with('error', 'Failed to update product price');
         }
@@ -1572,9 +1851,10 @@ public function updateDiscountProductPrice(Request $request, $id)
 }
 
 
+
 // UpdateAllProductDeals
 
-public function UpdateAllProductDeals(){
+public function UpdateAllProductDeals(Request $request){
 
     try {
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
@@ -1583,6 +1863,17 @@ public function UpdateAllProductDeals(){
         if ($response->successful()) {
             $products = $response->json();
             $totalProducts = count($products);
+             // 
+             $search = $request->input('search');
+
+             if ($search) {
+                 $products = array_filter($products, function ($product) use ($search) {
+                     return stripos($product['prodectTitle'], $search) !== false;
+                          
+                 });
+             }
+
+             // 
             // dd($products);
             $username = session('username');
             // Iterate over each user and access the username
@@ -1597,11 +1888,14 @@ public function UpdateAllProductDeals(){
     }
 
 }
+
 public function updateAllProductDealsById($id){
 
     try {
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
             ->get("https://crowdrobapi.tech/api/Product/GetProductById?productId={$id}");
+
+        //  dd($response->json());
 
         if ($response->successful()) {
             $productData = $response->json();
@@ -1637,7 +1931,7 @@ public function updateProductallDeals(Request $request, $id){
         // dd($data);
         // Make the API request to update the product deals
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-        ->post('https://crowdrobapi.tech/api/Product/UpdateAllProductDeals', $data);
+        ->put('https://crowdrobapi.tech/api/Product/UpdateAllProductDeals', $data);
 
         if ($response->successful()) {
             return redirect('UpdateAllProductDeals')->with('success', 'Update AllProduct Deals successfully');
@@ -1649,6 +1943,100 @@ public function updateProductallDeals(Request $request, $id){
     }
 
 }
+
+
+// ExportData
+
+public function exportAllUserDetailsToExcel()
+{
+    try {
+        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->get('https://crowdrobapi.tech/api/User/User/GetAllUser');
+
+        if ($response->successful()) {
+            $users = $response->json();
+
+            // Create a new Spreadsheet object
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Set the header row
+            $sheet->setCellValue('A1', 'UserName');
+            $sheet->setCellValue('B1', 'FirstName');
+            $sheet->setCellValue('C1', 'LastName');
+            $sheet->setCellValue('D1', 'Email');
+            $sheet->setCellValue('E1', 'PhoneNumber');
+            $sheet->setCellValue('F1', 'userRoles');
+            // Add more headers as needed
+
+            // Populate the data
+            $rowNumber = 2;
+            foreach ($users as $users) {
+                $sheet->setCellValue('A' . $rowNumber, $users['username'] ?? '');
+                $sheet->setCellValue('B' . $rowNumber, $users['firstName'] ?? '');
+                $sheet->setCellValue('C' . $rowNumber, $users['lastName'] ?? '');
+                $sheet->setCellValue('D' . $rowNumber, $users['email'] ?? '');
+                $sheet->setCellValue('E' . $rowNumber, $users['phoneNumbe'] ?? '');
+                $sheet->setCellValue('F' . $rowNumber, $users['userRoles'] ?? '');
+                // Add more columns as needed
+
+                $rowNumber++;
+            }
+
+            // Write the spreadsheet to a file
+            $writer = new Xlsx($spreadsheet);
+            $fileName = 'allusers_details.xlsx';
+            $filePath = storage_path('app/public/' . $fileName);
+            $writer->save($filePath);
+
+            return response()->download($filePath)->deleteFileAfterSend(true);
+        } else {
+            return view('api.error');
+        }
+    } catch (RequestException $e) {
+        return view('api.error');
+    }
+}
+
+// Career Editable
+
+public function showcareer(){
+    $username = session('username');
+    return view('carreer', compact('username'));
+}
+
+
+
+public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Validate the input
+        $request->validate([
+            'query' => 'required|string|max:255',
+        ]);
+
+        try {
+            // Call the search API
+            $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+                            ->get("https://crowdrobapi.tech/api/Product/SearchProduct", [
+                                'Product' => $query
+                            ]);
+
+            if ($response->successful()) {
+                $products = $response->json();
+                Log::debug('Search API response:', $products);
+                return view('search', ['products' => $products]);
+            } else {
+                Log::error('Search API request failed: ' . $response->status() . ' - ' . $response->body());
+                return redirect()->back()->with('error', 'Failed to retrieve search results');
+            }
+        } catch (\Exception $e) {
+            Log::error('Exception occurred: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while searching for products');
+        }
+    }
+
 
 
 }

@@ -29,10 +29,10 @@
                     <div class="card-body">
                         <form action="{{ route('subcategory.store') }}" method="POST"> <!-- Corrected method to POST -->
                             @csrf
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="subCategoryId" class="form-label">Subcategory ID</label>
-                                <input type="number" class="form-control" id="subCategoryId" name="subCategoryId" required>
-                            </div>
+                                <input type="number" class="form-control" id="subCategoryId" name="subCategoryId">
+                            </div> --}}
                             <div class="mb-3">
                                 <label for="subCategoryName" class="form-label">Subcategory Name</label>
                                 <input type="text" class="form-control" id="subCategoryName" name="subCategoryName" required>

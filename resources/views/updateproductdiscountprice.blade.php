@@ -20,14 +20,14 @@
         <!-- Text input for product MRP price -->
         <div class="mb-4">
             <div class="form-outline">
-                <input type="text" id="productId" name="productId" class="form-control" value="{{ $product['productId'] }}">
-                <label class="form-label" for="productId">productId</label>
+                <input type="text" id="productId" name="productId" class="form-control" value="{{ $product['productId'] }}" hidden>
+                {{-- <label class="form-label" for="productId">productId</label> --}}
             </div>
         </div>
         <div class="mb-4">
             <div class="form-outline">
                 <input type="text" id="productDiscount" name="productDiscount" class="form-control" value="{{ $product['productDiscount'] }}">
-                <label class="form-label" for="productDiscount">Product MRP Price</label>
+                <label class="form-label" for="productDiscount">Product Discount Price in %</label>
             </div>
         </div>
     

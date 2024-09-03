@@ -10,9 +10,19 @@
     <div class="container">
         <div class="card">
             <div class="card-body" style="background-color: #00ced1;"> <h3 class="text-center">  Enquiry Details</h3> </div>
+          
           </div>
+          <div class="my-3">
+            <a href="/export-inquiry-details" class="btn btn-primary">Export to Excel</a>
+        </div>
           </div>
-        
+          <div>
+            <form action="{{ route('getenquiry') }}" method="GET" class="mb-4">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Enquiry Details" class="form-control">
+                <button type="submit" class="btn btn-primary mt-2">Search</button>
+                <a href="{{ route('getenquiry') }}" class="btn btn-secondary">Reset</a>
+            </form>
+          </div>
         <table class="table">
             <thead>
                 <tr>
@@ -20,6 +30,8 @@
                     <th>Name</th>
                     <th>Email Id</th>
                      <th>Mobile Number</th>
+                     <th>Location</th>
+                     <th>Date</th>
                      <th>Message</th>
                     {{-- <th>Delete</th>
                     <th>View</th> --}}
@@ -32,6 +44,9 @@
                         <td>{{ $item['name'] }}</td>
                         <td>{{ $item['emailID'] }}</td>
                         <td>{{ $item['mobileNo'] }}</td>
+                        <td>{{ $item['location'] }}</td>
+                        {{-- <td>{{ $item['dateTime'] }}</td> --}}
+                        <td>{{ \Carbon\Carbon::parse($item['dateTime'])->format('d/m/y : H:i') }}</td>
                         <td>{{ $item['messages'] }}</td>
                         {{-- <td>
                             <a href="{{ url('/updateproduct/' . $product['productId']) }}" class="btn btn-primary">Edit</a> <!-- Link to the updateproduct route with productId --> --}}

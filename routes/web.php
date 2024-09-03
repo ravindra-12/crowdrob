@@ -5,7 +5,9 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
 use App\Http\Middleware\AuthCheck;
+use App\Http\Controllers\ExportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +57,24 @@ Route::get('shipping-method', function () {
 Route::get('/', function () {
     return view('home');
 });
+
+Route::get('career', function () {
+    return view('jobs');
+});
+// Route::get('careerpost', function () {
+//     return view('carreer');
+// });
+
+Route::get('careerpost', [CategoriesController::class, 'getCareerPageById']);
+Route::get('careerpage', [CategoriesController::class, 'getcareerPage']);
+Route::put('/update-career-page/{id}', [CategoriesController::class, 'updateCareerPage'])->name('update.career.page');
+Route::get('admincareerpage', [CategoriesController::class, 'getCareerAdminPage']);
+
+Route::get('vendor', function () {
+    return view('vendor');
+});
+
+
 Route::get('add', function () {
     return view('add_brand');
 });
@@ -68,6 +88,36 @@ Route::get('edit', function () {
 Route::get('add_category', function () {
     return view('add_category');
 });
+
+Route::get('update-status', function () {
+    return view('updateOrder');
+});
+
+// Order Routes
+
+Route::get('/add-city', [OrderController::class, 'create'])->name('cities.create');
+Route::post('/add-city', [OrderController::class, 'store'])->name('cities.store');
+Route::get('/cities', [OrderController::class, 'getActiveDeliveryCities'])->name('cities.index');
+
+Route::get('/getallvendororder', [ApiController::class, 'getvendororderdata'])->name('allvendorr');
+Route::get('/getallvendororder/{id}', [OrderController::class, 'GetAllOrdersByVendorId']);
+
+
+
+Route::get('deliverycities', [OrderController::class, 'GetActiveDeliveryCities']);
+Route::get('allvendororder', [OrderController::class, 'GetAllVendorOrder']);
+Route::get('allvendororder', [OrderController::class, 'GetAllVendorOrder']);
+Route::get('orderprofitloss', [OrderController::class, 'GetAllOrderProfitAndLossList']);
+Route::get('order', [OrderController::class, 'GetAllUserOrders']);
+Route::get('getallorder', [OrderController::class, 'GetAllOrders']);
+Route::get('oredrstatus', [OrderController::class, 'OrderPlaceStatus']);
+Route::get('sellingdetails/{id}', [OrderController::class, 'GetallNetSellByVendorID']);
+
+Route::put('/orders/update', [OrderController::class, 'update'])->name('orders.update');
+Route::get('/updatestatus/{id}', [OrderController::class, 'GetOrdersById']);
+// End Order Routes
+
+
 // form
 
 // ForgotPassword Form
@@ -87,15 +137,85 @@ Route::post('/forgot-password', [UserController::class, 'forgotPassword'])->name
 // });
 
 Route::get('caraousel', [ApiController::class, 'GetCaraousel']);
+Route::get('homeads', [ApiController::class, 'AdsHomeads']);
+
+// 
+
+Route::get('add_caraosel', function(){
+    return view('add_caraosel');
+});
 
 
-Route::get('add_caraosel', [ApiController::class, 'getAllCategoryforcaraousel']);
+Route::get('adds_home', function(){
+    return view('add_adshome');
+});
 
+
+
+Route::get('updatehomeads/{id}', [CategoriesController::class, 'HomeadsByID']);
+Route::put('updatehomeads/{id}', [CategoriesController::class, 'updatehomeads'])->name('homeads.update');
+// Route::get('add_caraosel', [ApiController::class, 'getAllCategoryforcaraousel']);
+Route::post('/adshome/store', [CategoriesController::class, 'storeadshome'])->name('adshome.store');
 Route::post('/caraosel/store', [CategoriesController::class, 'storeCarousel'])->name('caraosel.store');
 Route::delete('/caraousel/{id}', [ApiController::class, 'deleteCaraousel'])->name('caraousel.delete');
+Route::delete('/homeads/{id}', [ApiController::class, 'deletehomeads'])->name('homeads.delete');
 
 
 // EndCaraosel
+
+// GColor
+
+Route::get('addcolor', function(){
+    return view('addcolor');
+});
+
+Route::get('addsize', function(){
+    return view('addsize');
+});
+
+Route::get('addcoupon', function(){
+    return view('addcoupon');
+});
+
+// Coupon
+
+Route::get('getallcoupon', [OrderController::class, 'GetAllCoupon']);
+Route::delete('getallcoupon/{id}', [OrderController::class, 'DeleteCoupon'])->name('coupone.delete');
+Route::post('addcoupon', [OrderController::class, 'AddCoupon'])->name('add.coupon');
+Route::get('updatecoupon/{id}', [OrderController::class, 'GetCouponById']);
+Route::put('updatecoupon/{id}', [OrderController::class, 'UpdateCoupon'])->name('update.coupon');
+
+// End Coupon
+
+
+//Paymentwithdrwal
+
+Route::get('getallpaymentwithdrawal', [OrderController::class, 'GetallPaymentWithdrawal']);
+Route::get('getallaccountsetup', [OrderController::class, 'GetallGetAllAccountSetups']);
+Route::get('getallpaymentwithdrawal/{id}', [OrderController::class, 'GetallPaymentWithdrawalById']);
+Route::get('getallaccountsetup/{id}', [OrderController::class, 'GetallGetAllAccountSetupsById']);
+
+Route::delete('getallpaymentwithdrawal/{id}', [OrderController::class, 'DeleteWithdrwalByPaymentId'])->name('delete.paymentwithdrawal');
+
+Route::delete('getallaccountsetup/{id}', [OrderController::class, 'DeleteAccountSetups'])->name('delete.accountsetup');
+
+
+// End paymentwithdrwal
+
+Route::get('getallcolor', [CategoriesController::class, "GetAllColor"]);
+Route::get('getallsize', [CategoriesController::class, "GetAllSize"]);
+
+Route::post('addsize', [CategoriesController::class, 'AddNewSize'])->name('add.size');
+Route::post('addcolor', [CategoriesController::class, 'AddColor'])->name('add.color');
+Route::delete('color/{id}', [CategoriesController::class, 'DeleteColor'])->name('delete.color');
+Route::get('updatecolor/{id}', [CategoriesController::class, 'getColorById'])->name('update.color');
+// Route::get('updatesize/{id}', [CategoriesController::class, 'getColorById'])->name('update.size');
+
+
+Route::delete('size/{id}', [CategoriesController::class, 'DeleteSize'])->name('delete.size');
+
+// EndColor
+
 
 // ResetPassword Form
 
@@ -105,9 +225,9 @@ Route::post('/resetyourpassword', [ApiController::class, 'resetyourpassword'])->
 
 // EndResetPassword Form
 
-
+Route::get('/export-inquiry-details', [ApiController::class, 'exportInquiryDetailsToExcel']);
 Route::post('/submit-form', [ApiController::class, 'submitForm'])->name('form.submit');
-Route::get('enquirydetails', [ApiController::class, 'getinquirydetails']);
+Route::get('enquirydetails', [ApiController::class, 'getinquirydetails'])->name('getenquiry');
 // SUBCATEGORY ROUTES
 
 // Lounchsetting///
@@ -163,13 +283,13 @@ Route::group(['middleware' => ['AuthCheck']], function () {
     Route::get('/updatemrpbycat', [ApiController::class, 'getByCategorieId']);
     Route::get('/updatemrp', [ApiController::class, 'getallproductprice']);
     Route::get('/dashboard', [ApiController::class, 'getallvendors']);
-    Route::get('/allvendor', [ApiController::class, 'getData']);
-    Route::get('/allproducts', [ApiController::class, 'getAllProductData'])->name('allproducts');
+    Route::get('/allvendor', [ApiController::class, 'getData'])->name('allvendor');
+    Route::get('/allproducts', [ApiController::class, 'getAllProductData'])->name('allproduct');
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     // Route::get('/logout', [AuthController::class, 'logout']);
     // Route::get('/allusers', [ApiController::class, 'getallusers']);
     Route::get('/allusers', [ApiController::class, 'getallusers'])->name('allusers');
-    Route::get('/allstore', [ApiController::class, 'getallStore']);
+    Route::get('/allstore', [ApiController::class, 'getallStore'])->name('allstore');
     Route::get('/allproducts/catid={catid}', [ApiController::class, 'getAllProductData'])->name('allproducts');
     
     Route::get('/allproducts/brandid={brandid}', [ApiController::class, 'getAllProductData'])->name('allproducts');
@@ -181,7 +301,7 @@ Route::group(['middleware' => ['AuthCheck']], function () {
 // Approval Routes
 
 Route::get('/product/approve/{productId}', [CategoriesController::class, 'approveProduct'])->name('product.approve');
-
+Route::get('/product/approvecancel/{productId}', [CategoriesController::class, 'CancelledApproval'])->name('product.cancelapprove');
 //  Updtate ProductDiscount
 
 Route::get('/discountprice/{id}', [ApiController::class, 'updateproductdiscountprice']);
@@ -193,9 +313,9 @@ Route::put('/discountprice/discountupdate/{id}', [ApiController::class, 'updateD
 
 // UpdateAllProductDeals
 
-Route::get('UpdateAllProductDeals', [ApiController::class, 'UpdateAllProductDeals']);
+Route::get('UpdateAllProductDeals', [ApiController::class, 'UpdateAllProductDeals'])->name('UpdateAllProductDeals');
 Route::get('/UpdateAllProductDeals/{id}', [ApiController::class, 'updateAllProductDealsById']);
-Route::post('/UpdateAllProductDeals/ProductDeals/{id}', [ApiController::class, 'updateProductallDeals'])->name('ProductDeals.update');
+Route::put('/UpdateAllProductDeals/ProductDeals/{id}', [ApiController::class, 'updateProductallDeals'])->name('productsdeals.update');
 
 
 // End AllProductDeals
@@ -244,4 +364,16 @@ Route::put('/mrp/mrpupdatebycat/{id}', [ApiController::class, 'updtaePriceBycate
 
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+
+
+
+// ExPoRt DaTa
+
+Route::get('/export-alluser-details', [ApiController::class, 'exportAllUserDetailsToExcel']);
+
+
+
+
+
 ?>
+

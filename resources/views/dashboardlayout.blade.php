@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -95,7 +96,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="/" class="brand-link">
-    <img src="dist/img/Crodrob-logo.webp" height="70px" width="100%" alt="Crodrob Logo"  >
+    <img src="{{asset('images/crowdrob-logo.png')}}" height="80px" width="80px" alt="Crodrob Logo"  >
       <!--<h3>Crowdrob</h3>-->
       
     </a>
@@ -215,12 +216,12 @@
                 </a>
               </li> --}}
 
-              <li class="nav-item">
+              {{-- <li class="nav-item">
                 <a href="/caraousel" class="nav-link {{ request()->is('caraousel') ? "active" : ""}}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Caraosel</p>
                 </a>
-              </li>
+              </li> --}}
               <li class="nav-item">
                 <a href="/launch-setting" class="nav-link {{ request()->is('launch-setting') ? "active" : ""}}">
                   <i class="far fa-circle nav-icon"></i>
@@ -234,11 +235,117 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="/UpdateAllProductDeals" class="nav-link {{ request()->is('UpdateAllProductDeals') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>UpdateAllProductDeals</p>
+                </a>
+              </li>
+              {{-- <li class="nav-item">
                 <a href="/enquirydetails" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Enquiry Details</p>
                 </a>
+              </li> --}}
+              <li class="nav-item">
+                <a href="/admincareerpage" class="nav-link  {{ request()->is('admincareerpage') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>careerpage</p>
+                </a>
               </li>
+              <li class="nav-item">
+                <a href="/getallorder" class="nav-link  {{ request()->is('getallorder') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Getallorder</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/orderprofitloss" class="nav-link  {{ request()->is('orderprofitloss') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>ordercalculation</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/allvendororder" class="nav-link  {{ request()->is('allvendororder') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>allvendororder</p>
+                </a>
+              </li>
+              {{-- <li class="nav-item">
+                <a href="/deliverycities" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>deliverycities</p>
+                </a>
+              </li> --}}
+              <li class="nav-item">
+                <a href="/cities" class="nav-link {{ request()->is('cities') ? "active" : ""}} ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>ActiveDeliveryCities</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/getallvendororder" class="nav-link  {{ request()->is('getallvendororder') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>VendorOrder</p>
+                </a>
+              </li>
+              
+              <li class="nav-item">
+                <a href="/getallcolor" class="nav-link  {{ request()->is('getallcolor') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Getallcolor</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/getallsize" class="nav-link  {{ request()->is('getallsize') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Getallsize</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="/getallcoupon" class="nav-link  {{ request()->is('getallcoupon') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>GetallCoupon</p>
+                </a>
+              </li>
+
+
+            
+              <li class="nav-item">
+                <a href="/homeads" class="nav-link  {{ request()->is('homeads') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>homeads</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/getallaccountsetup" class="nav-link  {{ request()->is('getallaccountsetup') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Getallaccountsetup</p>
+                </a>
+              </li>
+
+
+              <li class="nav-item">
+                <a href="/getallpaymentwithdrawal" class="nav-link  {{ request()->is('getallpaymentwithdrawal') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Getallpaymentwithdrawal</p>
+                </a>
+              </li>
+
+
+              <li class="nav-item">
+                <a href="/homeads" class="nav-link  {{ request()->is('homeads') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>homeads</p>
+                </a>
+              </li>
+             
+              {{-- <li class="nav-item">
+                <a href="/getallorder" class="nav-link  {{ request()->is('getallorder') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Getallorder</p>
+                </a>
+              </li> --}}
                </ul>
          </nav>
       <!-- /.sidebar-menu -->
@@ -274,7 +381,7 @@
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2021 <a href="">Murmusoftwareinfotech.com</a>.</strong>
+    <strong>Copyright &copy; 2014-2021 <a href="">crowdrob.com</a>.</strong>
     All rights reserved.
    
   </footer>

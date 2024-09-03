@@ -31,6 +31,12 @@
                 <label class="form-label" for="categoryImage">Category Image</label>
             </div>
         </div>
+        {{-- <div class="mb-4">
+            <div class="form-outline">
+                <input type="file" id="CategoryBanner" name="CategoryBanner" class="form-control">
+                <label class="form-label" for="CategoryBanner">CategoryBanner</label>
+            </div>
+        </div> --}}
 
         <!-- Text input for Category Link -->
         <div class="mb-4">

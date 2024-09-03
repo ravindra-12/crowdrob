@@ -53,7 +53,7 @@
                             <p class="card-text"> {{ $product['categoryId'] }}</p>
                         </td>
                         <td> 
-                           <img src="{{ $product['categoryImage'] }}" class="img-fluid" height="80px" width="120px" />
+                            <img src="{{ $product['categoryImage'] }}" class="img-fluid" height="80" width="120" />
                         </td>
                         <td>
                             <h5 class="card-title">{{ $product['categoryName'] }}</h5>

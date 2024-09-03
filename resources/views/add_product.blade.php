@@ -20,12 +20,12 @@
                         <form action="{{ route('add.product') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                             <div class="mb-3 row">
+                             {{-- <div class="mb-3 row">
                                 <label for="productId" class="col-sm-3 col-form-label">Product ID</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="productId" name="productId" placeholder="Product ID" required>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="mb-3 row">
                                 <label for="prodectTitle" class="col-sm-3 col-form-label">Product Title</label>
                                 <div class="col-sm-9">
@@ -119,7 +119,7 @@
                             <div class="mb-3 row">
                                 <label for="productShortDescription" class="col-sm-3 col-form-label">Short Description</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="productShortDescription" name="productShortDescription" placeholder="Short Description" required>
+                                    <input type="text" class="form-control" id="productShortDescription" name="productShortDescription" placeholder="Short Description" >
                                 </div>
                             </div>
                             <div class="mb-3 row">
@@ -134,7 +134,7 @@
                                     <input type="text" class="form-control" id="productSKU" name="productSKU" placeholder="Product SKU" required>
                                 </div>
                             </div>
-                            <div class="mb-3 row">
+                            {{-- <div class="mb-3 row">
                                 <label for="productApproval" class="col-sm-3 col-form-label">Product Approval</label>
                                 <div class="col-sm-9">
                                     <select class="form-select" id="productApproval" name="productApproval" required>
@@ -142,16 +142,17 @@
                                         <option value="0">False</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="mb-3 row">
                                 <label for="productInStock" class="col-sm-3 col-form-label">Product In Stock</label>
                                 <div class="col-sm-9">
                                     <select class="form-select" id="productInStock" name="productInStock" required>
-                                        <option value="yes">True</option>
-                                        <option value="No">False</option>
+                                        <option value="1">True</option>
+                                        <option value="0">False</option>
                                     </select>
                                 </div>
                             </div>
+                            
                             {{-- <div class="mb-3 row">
                                 <label for="categoryId" class="col-sm-3 col-form-label">Category ID</label>
                                 <div class="col-sm-9">
@@ -176,17 +177,29 @@
                             <div class="mb-3 row">
                                 <label for="vendorSubCategory" class="col-sm-3 col-form-label">vendor SubCategory</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="vendorSubCategory" name="vendorSubCategory" placeholder="vendorSubCategory" required>
+                                    <input type="text" class="form-control" id="vendorSubCategory" name="vendorSubCategory" placeholder="vendorSubCategory">
                                 </div>
                             </div>
                             {{--  --}}
                       
+                            {{-- <div class="mb-3 row">
+                                <label for="subCategory" class="col-sm-3 col-form-label">Sub Category</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="subCategory" name="subCategory" placeholder="Sub Category" >
+                                </div>
+                            </div>  --}}
+
                             <div class="mb-3 row">
                                 <label for="subCategory" class="col-sm-3 col-form-label">Sub Category</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="subCategory" name="subCategory" placeholder="Sub Category" required>
+                                     <select class="form-select" id="categoryId" name="subCategory" required>
+                                    @foreach ($subactegory as $subactegory)
+                                        <option value="{{ $subactegory['subCategoryId'] }}">{{ $subactegory['subCategoryName'] }}</option>
+                                    @endforeach
+                                </select>
                                 </div>
-                            </div>
+                            </div> 
+
                             <div class="mb-3 row">
                                 <label for="productBrands" class="col-sm-3 col-form-label">Product Brands</label>
                                 <div class="col-sm-9">

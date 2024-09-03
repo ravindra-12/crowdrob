@@ -38,7 +38,7 @@
                     <th>subCategoryId</th>
                     <th>subCategoryName</th>
                     <th>categoryId</th>
-                    <th>category</th>
+                    {{-- <th>category</th> --}}
                   
                   
                     {{-- <th>Created Date</th> --}}
@@ -60,9 +60,9 @@
                             <h5 class="card-title">{{ $product['categoryId'] }}</h5>
                         </td>
                         
-                        <td>
+                        {{-- <td>
                             <p class="card-text"> {{ $product['category'] }}</p>
-                        </td>
+                        </td> --}}
                         {{-- <td>{{ $product['createdDate'] }}</td> --}}
                         {{-- <td>
                             <a href="{{ url('/updatecategory/' . $product['categoryId']) }}" class="btn btn-primary">Update</a> <!-- Link to the updateproduct route with productId -->

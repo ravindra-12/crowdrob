@@ -3,7 +3,6 @@
 @section('content')
 
 
-
         <!-- Slider
   ============================================= -->
 
@@ -44,32 +43,3 @@
 
  @endsection
 
-<!-- Go To Top
-============================================= -->
-<div id="gotoTop" class="uil uil-angle-up"></div>
-
-<!-- JavaScripts
-============================================= -->
-<script src="js/plugins.min.js"></script>
-<script src="js/functions.bundle.js"></script>
-
-<!-- Parallax Script
-============================================= -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/skrollr/0.6.30/skrollr.min.js"></script>
-<script>
-    !SEMICOLON.Mobile.any() && skrollr.init({
-        forceHeight: false
-    });
-</script>
-
-<script>
-    jQuery(window).on('load', function() {
-        setTimeout(function() {
-            jQuery('.owl-stage').after('<div class="owl-stage-outer-bg"></div>');
-        }, 1000);
-    });
-</script>
-
-</body>
-
-</html>

@@ -36,6 +36,20 @@
     <input type="hidden" name="currentCategoryImage" value="{{ $product['categoryImage'] }}">
 </div>
 
+{{--  --}}
+
+{{-- <div class="mb-4">
+    <div data-mdb-input-init class="form-outline">
+        <input type="file" id="categoryBanner" name="categoryBanner" class="form-control">
+        <label class="form-label" for="categoryBanner">Category BannerImage</label>
+    </div>
+    <!-- Display current image -->
+    <img src="{{ $product['categoryBanner'] }}" alt="Category Image" style="max-width: 100px;">
+    <input type="hidden" name="currentCategoryImage" value="{{ $product['categoryBanner'] }}">
+</div> --}}
+
+{{--  --}}
+
         <!-- Text input for Category Name -->
         <div class="mb-4">
             <div class="form-outline">

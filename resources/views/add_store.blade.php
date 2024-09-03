@@ -21,10 +21,10 @@
                     <div class="card-body">
                         <form action="{{ route('add.store') }}" method="POST">
                             @csrf
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="storeId" class="form-label">Store ID</label>
-                                <input type="text" class="form-control" id="storeId" name="storeId" required>
-                            </div>
+                                <input type="text" class="form-control" id="storeId" name="storeId" >
+                            </div> --}}
                             <div class="mb-3">
                                 <label for="registerVendorUserId" class="form-label">Register Vendor User ID</label>
                                 <input type="text" class="form-control" id="registerVendorUserId" name="registerVendorUserId" required>

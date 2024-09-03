@@ -54,7 +54,7 @@
                 <!-- Logo -->
                 <div id="logo" class="border-end-0">
                     <a href="/">
-                        <img class="logo-default" src="/images/Crodrob-logo.png" alt="Canvas Logo">
+                        <img class="logo-default" src="/images/crowdrob-logo.png" alt="Canvas Logo">
                     </a>
                 </div>
                 <!-- #logo end -->

@@ -9,7 +9,14 @@
                 <div class="card-body" style="background-color: #00ced1;"> <h3 class="text-center">  All Vendors</h3> </div>
               </div>
               </div>
-        <table class="table">
+              <div>
+                <form action="{{ route('allvendor') }}" method="GET" class="mb-4">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Vendor" class="form-control">
+                    <button type="submit" class="btn btn-primary mt-2">Search</button>
+                    <a href="{{ route('allvendor') }}" class="btn btn-secondary">Reset</a>
+                </form>
+              </div>
+        <table class="table table-responsive">
             <thead>
                 <tr>
                     {{-- <th>Username</th> --}}
@@ -23,6 +30,7 @@
                     <th>Edit</th>
                     <th>Delete</th>
                     <th>View</th>
+                    {{-- <th>Netsell</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -49,6 +57,9 @@
                         <td>
                             <a href="{{ url('/vendordetails/' . $user['registerVendorUserId']) }}" class="btn btn-info">View</a>
                         </td>
+                        {{-- <td>
+                            <a href="{{ url('/sellingdetails/' . $user['registerVendorUserId']) }}" class="btn btn-info">Netsell</a>
+                        </td> --}}
                     </tr>
                 @endforeach
             </tbody>

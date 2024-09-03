@@ -15,16 +15,22 @@
     </div>
 </div>
 @endif
-    <div class="container">
+    <div class="container ">
         <div class="card">
             <div class="card-body" style="background-color: #00ced1;"> <h3 class="text-center"> Update All ProductDeals</h3> </div>
           </div>
           </div>
         {{--  --}}
-         
+        <div>
+            <form action="{{ route('UpdateAllProductDeals') }}" method="GET" class="mb-4">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Store" class="form-control">
+                <button type="submit" class="btn btn-primary mt-2">Search</button>
+                <a href="{{ route('UpdateAllProductDeals') }}" class="btn btn-secondary">Reset</a>
+            </form>
+          </div>
        
         {{--  --}}
-        <table class="table">
+        <table class="table table-responsive">
             <thead>
                 <tr>
                     <th>prodectTitle</th>
@@ -34,12 +40,12 @@
                     <th>isTopFeatured</th>
                     <th>isTopRated</th>
                     <th>isTopSelling</th>
-                    {{-- <th>isTopDeal_Home</th> --}}
-                    {{-- <th>istopTrending_Home</th> --}}
-                    {{-- <th>isTopFeatured_Home</th> --}}
-                    {{-- <th>isTopRated_Home</th> --}}
-                    {{-- <th>isFestiveOffer_Home</th> --}}
-                    {{-- <th>isDiscountOffer_Home</th> --}}
+                    <th>isTopDeal_Home</th>
+                    <th>istopTrending_Home</th>
+                    <th>isTopFeatured_Home</th>
+                    <th>isTopRated_Home</th>
+                    <th>isFestiveOffer_Home</th>
+                    <th>isDiscountOffer_Home</th>
               
                    <th>Action</th>
                 </tr>
@@ -69,27 +75,27 @@
                         <td>
                             <p class="card-text"> {{ $product['isTopSelling'] ? 'Yes' : 'No' }}</p>
                         </td>
+                        <td>
+                            <p class="card-text"> {{ $product['isTopDeal_Home'] ? 'yes' : 'No' }}</p>
+                        </td>
+                        <td>
+                            <p class="card-text"> {{ $product['istopTrending_Home'] ? 'yes' : 'No' }}</p>
+                        </td>
                         {{-- <td>
-                            <p class="card-text"> {{ $product['isTopDeal_Home'] }}</p>
+                            <p class="card-text"> {{ $product['isTopSelling'] ? 'yes' : 'No'  }}</p>
                         </td> --}}
-                        {{-- <td>
-                            <p class="card-text"> {{ $product['istopTrending_Home'] }}</p>
-                        </td> --}}
-                        {{-- <td>
-                            <p class="card-text"> {{ $product['isTopSelling'] }}</p>
-                        </td> --}}
-                        {{-- <td>
-                            <p class="card-text"> {{ $product['isTopFeatured_Home'] }}</p>
-                        </td> --}}
-                        {{-- <td>
-                            <p class="card-text"> {{ $product['isTopRated_Home'] }}</p>
-                        </td> --}}
-                        {{-- <td>
-                            <p class="card-text"> {{ $product['isFestiveOffer_Home'] }}</p>
-                        </td> --}}
-                        {{-- <td>
-                            <p class="card-text"> {{ $product['isDiscountOffer_Home'] }}</p>
-                        </td> --}}
+                        <td>
+                            <p class="card-text"> {{ $product['isTopFeatured_Home'] ? 'Yes' : 'No' }}</p>
+                        </td>
+                        <td>
+                            <p class="card-text"> {{ $product['isTopRated_Home'] ? 'Yes' : 'No' }}</p>
+                        </td>
+                        <td>
+                            <p class="card-text"> {{ $product['isFestiveOffer_Home'] ? 'Yes' : " No" }}</p>
+                        </td>
+                        <td>
+                            <p class="card-text"> {{ $product['isDiscountOffer_Home'] ? 'Yes' : 'No'}}</p>
+                        </td>
                        
                        
                         {{-- <td>{{ $product['createdDate'] }}</td> --}}

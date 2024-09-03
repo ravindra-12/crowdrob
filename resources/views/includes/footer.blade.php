@@ -158,7 +158,7 @@
                         </div>
 
                         <div class="col-md-6 text-center text-md-end">
-                            <a href="#"
+                            <a href="https://play.google.com/store/apps/details?id=com.crowdrob.app&pcampaignid=web_share&pli=1"
                                 class="btn color bg-white rounded px-3 py-2 text-transform-none ls-0 shadow-sm"><i
                                     class="fa-brands fa-apple me-2"></i>App Store</a>
                             <a href="#"

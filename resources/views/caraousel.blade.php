@@ -17,7 +17,7 @@
 @endif
     <div class="container">
         <div class="card">
-            <div class="card-body" style="background-color: #00ced1;"> <h3 class="text-center">  Update Price By Categories</h3> </div>
+            <div class="card-body" style="background-color: #00ced1;"> <h3 class="text-center">  Update caraousel</h3> </div>
           </div>
           </div>
         {{--  --}}

@@ -170,76 +170,131 @@
     @endif
 {{-- </section> --}}
 
-    @if (!isset($product['title']))
-    <!-- Product Details -->
-    <div class="text-center my-3">
-      <h3>Products Details</h3>
-    </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Product ID</th>
-                <th scope="col">Title</th>
-                <th scope="col">Image</th>
-                <th scope="col">Price</th>
-                <th scope="col">Short Description</th>
-                <th scope="col">In Stock</th>
-                <th scope="col">SKU</th>
-                {{-- <th scope="col">Created Date</th> --}}
-                {{-- <th scope="col">Modified Date</th> --}}
-                <th scope="col">Category ID</th>
-                <th scope="col">Subcategory</th>
-                <th scope="col">Product Brands</th>
-                <!-- Add more headers as needed -->
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($product as $product)
-            <tr>
-                <td>{{ $product['productId'] }}</td>
-                <td>{{ $product['prodectTitle'] }}</td>
-                <td>
-                    @if(is_array($product['prodectImage']) && count($product['prodectImage']) > 0)
-                        @if($product['prodectImage'][0]) <!-- Ensure the first image is not null -->
-                            <img src="{{ $product['prodectImage'][0] }}" class="img-fluid" height="80px" width="80px" />
-                        @endif
-                    @else
-                        <img src="{{ $product['prodectImage'] }}" class="img-fluid" height="80px" width="80px" />
+@if (!isset($product['title']))
+<!-- Product Details -->
+<div class="text-center my-3">
+  <h3>Products Details</h3>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Product ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Image</th>
+            <th scope="col">Price</th>
+            <th scope="col">Short Description</th>
+            <th scope="col">In Stock</th>
+            <th scope="col">SKU</th>
+            {{-- <th scope="col">Created Date</th> --}}
+            {{-- <th scope="col">Modified Date</th> --}}
+            <th scope="col">Category ID</th>
+            <th scope="col">Subcategory</th>
+            <th scope="col">Product Brands</th>
+            <!-- Add more headers as needed -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($product as $product)
+        <tr>
+            <td>{{ $product['productId'] }}</td>
+            <td>{{ $product['prodectTitle'] }}</td>
+            <td>
+                @if(is_array($product['prodectImage']) && count($product['prodectImage']) > 0)
+                    @if($product['prodectImage'][0]) <!-- Ensure the first image is not null -->
+                        <img src="{{ $product['prodectImage'][0] }}" class="img-fluid" height="80px" width="80px" />
                     @endif
-                </td>
-                <td>{{ $product['productPrice'] }}</td>
-                <td>{!! $product['productShortDescription'] !!}</td>
-                <td>{{ $product['productInStock'] ? 'Yes' : 'No' }}</td>
-                <td>{{ $product['productSKU'] }}</td>
-                {{-- <td>{{ \Carbon\Carbon::parse($product['createdDate'])->format('d/m/y H:i') }}</td> --}}
-                {{-- <td>{{ \Carbon\Carbon::parse($product['modifiedDate'])->format('d/m/y H:i') }}</td> --}}
-                <td>{{ $product['categoryId'] }}</td>
-                <td>{{ $product['subCategory'] }}</td>
-                <td>{{ $product['productBrands'] }}</td>
-                <!-- Populate other product details -->
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-    @else
-    <!-- Display a message if no product data is available -->
-    <div class="container bg-primary mb-3 p-lg-5" >
-        <div class="mb-4 float-end">
-            <a href="/add_Product" class="btn btn-success btn-md">Add Product</a> 
-        </div>
-        <div>
-            <p class="text-center">No Product data available. Please add Product.</p>
-            <!-- Display a button to create a store -->
-            <!-- Example: 
-                {{-- <a href="{{ route('create.store') }}" class="btn btn-primary">Create Store</a> --}}
-            -->
-        </div>
+                @else
+                    <img src="{{ $product['prodectImage'] }}" class="img-fluid" height="80px" width="80px" />
+                @endif
+            </td>
+            <td>{{ $product['productPrice'] }}</td>
+            <td>{!! $product['productShortDescription'] !!}</td>
+            <td>{{ $product['productInStock'] ? 'Yes' : 'No' }}</td>
+            <td>{{ $product['productSKU'] }}</td>
+            {{-- <td>{{ \Carbon\Carbon::parse($product['createdDate'])->format('d/m/y H:i') }}</td> --}}
+            {{-- <td>{{ \Carbon\Carbon::parse($product['modifiedDate'])->format('d/m/y H:i') }}</td> --}}
+            <td>{{ $product['categoryId'] }}</td>
+            <td>{{ $product['subCategory'] }}</td>
+            <td>{{ $product['productBrands'] }}</td>
+            <!-- Populate other product details -->
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+@else
+<!-- Display a message if no product data is available -->
+<div class="container bg-primary mb-3 p-lg-5" >
+    <div class="mb-4 float-end">
+        <a href="/add_Product" class="btn btn-success btn-md">Add Product</a> 
     </div>
-    @endif
-    </section>
-   
+    <div>
+        <p class="text-center">No Product data available. Please add Product.</p>
+        <!-- Display a button to create a store -->
+        <!-- Example: 
+            {{-- <a href="{{ route('create.store') }}" class="btn btn-primary">Create Store</a> --}}
+        -->
+    </div>
+</div>
+@endif
+</section>
+   <!-- Vendor Cancel Details -->
+
+<section class="container">
+    <div class="text-center">
+        <h3>Cancel Product</h3>
+    </div>
+
+   @if (!isset($cancelapproval['title']))
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Product ID</th>
+                    <th scope="col">Product Title</th>
+                    <th scope="col">Product Image</th>
+                    <th scope="col">Product Price</th>
+                    <!-- Add more headers as needed -->
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($cancelapproval as $item)
+                <tr>
+                    <td>{{ $item['productId'] }}</td>
+                    <td>{{ $item['prodectTitle'] }}</td>
+                    <td>
+                        @if(is_array($item['prodectImage']) && count($item['prodectImage']) > 0)
+                            @if($item['prodectImage'][0]) <!-- Ensure the first image is not null -->
+                                <img src="{{ $item['prodectImage'][0] }}" alt="Product Image" height="80px" width="80px">
+                            @endif
+                        @else
+                            <img src="{{ $item['prodectImage'] }}" alt="Product Image" height="80px" width="80px">
+                        @endif
+                    </td>
+                    <td>{{ $item['productPrice'] }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        @else
+        <!-- Display a message if no product data is available -->
+        <div class="container bg-primary mb-3 p-lg-5" >
+            <div class="mb-4 float-end">
+                <a href="/add_Product" class="btn btn-success btn-md">Add Product</a> 
+            </div>
+            <div>
+                <p class="text-center">No Product data available. Please add Product.</p>
+                <!-- Display a button to create a store -->
+                <!-- Example: 
+                    {{-- <a href="{{ route('create.store') }}" class="btn btn-primary">Create Store</a> --}}
+                -->
+            </div>
+        </div>
+        @endif
+</section>
+
+    
     
     </div>
+
     @endsection
 </body>
 </html>

@@ -11,7 +11,15 @@
             <a href="{{ url('/addstore') }}" class="btn btn-primary">Add Store</a>
         </div>
           </div>
-        <table class="table">
+
+          <div>
+            <form action="{{ route('allstore') }}" method="GET" class="mb-4">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Store" class="form-control">
+                <button type="submit" class="btn btn-primary mt-2">Search</button>
+                <a href="{{ route('allstore') }}" class="btn btn-secondary">Reset</a>
+            </form>
+          </div>
+        <table class="table table-responsive">
             <thead>
                 <tr>
 

@@ -1,18 +1,18 @@
   <!-- Header
   ============================================= -->
-        
+        <link rel="icon" href="{{ asset('images/crowdrob-logo.png') }}" type="image/png">
         <header id="header" class=" full-header bg-primary  no-sticky" data-responsive-class="" >
             <div id="header-wrap">
                 <div class="container">
-                    <div class="header-row">
+                    <div class="header-row ">
 
                         <!-- Logo
       ============================================= -->
                        <div id="logo" class="border-end-0">
                         {{-- <a href="/">
-                            <img class="logo-default" srcset="images/logo.png, images/logo@2x.png 2x" src="images/Crowdeob.png" alt="Canvas Logo"> --}}
+                            <img class="logo-default" srcset="images/logo.png, images/logo@2x.png 2x" src="images/crowdrob-logo.png" alt="Canvas Logo"> --}}
                             <a href="/">
-                                <img class="logo-default" srcset="/images/Crodrob-logo.png, images/Crodrob-logo.png" src="/images/Crodrob-logo.png" alt="Canvas Logo">
+                                <img class="logo-default" srcset="/images/crowdrob-logo.png, images/crowdrob-logo.png" src="/images/crowdrob-logo.png" alt="Canvas Logo">
                             {{-- <img class="logo-dark" srcset="images/logo-dark.png, images/logo-dark@2x.png 2x" src="images/logo-dark@2x.png" alt="Canvas Logo"> --}}
                         </a>
                     </div>
@@ -54,6 +54,14 @@
                                     <a class="menu-link" href="contact">
                                         <div>Contact</div>
                                     </a></li>
+                                 <li class="menu">
+                                    <a class="menu-link" href="careerpage">
+                                        <div>Career</div>
+                                    </a></li>
+                                    <li class="menu">
+                                        <a class="menu-link" href="vendor">
+                                            <div>Vendors</div>
+                                        </a></li>
                             </ul>
 
                         </nav><!-- #primary-menu end -->

@@ -33,14 +33,14 @@
             </div>
 
             <!-- Text input for Category ID -->
-            {{-- <div class="mb-4">
+            <div class="mb-4">
                 <div class="form-outline">
                     <input type="text" id="categoryID" name="categoryID" class="form-control" placeholder="Category ID">
                     <label class="form-label" for="categoryID">Category ID</label>
                 </div>
-            </div> --}}
+            </div>
 
-            <div class="mb-3">
+            {{-- <div class="mb-3">
                
                 <select class="form-select" id="categoryId" name="categoryID" required>
                     <option value="">Select Category</option> <!-- Default option -->
@@ -49,9 +49,17 @@
                     @endforeach
                 </select>
                 <label for="categoryId" class="form-label">Category</label>
-            </div>
+            </div> --}}
 
             <!-- Text input for Hero Image URL -->
+            {{-- <div class="mb-4">
+                <div class="form-outline">
+                    <input type="number" id="categoryID" name="categoryID" class="form-control" placeholder="Category Id">
+                    <label class="form-label" for="heroImageURL">Category Id</label>
+                </div>
+            </div> --}}
+
+
             <div class="mb-4">
                 <div class="form-outline">
                     <input type="text" id="heroImageURL" name="heroImageURL" class="form-control" placeholder="Carousel Image URL">

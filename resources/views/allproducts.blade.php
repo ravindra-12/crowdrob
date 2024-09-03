@@ -18,97 +18,23 @@
          </div>
     
           </div>
-        {{--  --}}
-         
-        {{-- <div class="container">
-      
-            <div class="row m-3">
-                <div class="col-md-4">
-                    <!-- Your dropdown goes here -->
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Product By Category
-                        </button>
-                        <div class="dropdown-menu"  aria-labelledby="dropdownMenuButton">
-                            @foreach($categories as $category)
-                            <a class="dropdown-item" href="/allproducts/catid={{ $category['categoryId'] }}">
-                                {{ $category['categoryName'] }}
-                            </a>
-                        @endforeach
-                           
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Product By Brand
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            @foreach($brands as $brands)
-                            <a class="dropdown-item" href="/allproducts/brandid={{ $brands['productBrandsId'] }}">
-                                {{ $brands['productBrandsName'] }}
-                            </a>
-                        @endforeach
-                            
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Product By SubCategory
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            @foreach($subcategories as $subcategories)
-                            <a class="dropdown-item" href="/allproducts/subcatid={{ $subcategories['subCategoryId'] }}">
-                                {{ $subcategories['subCategoryName'] }}
-                            </a>
-                        @endforeach
-                           
-                        </div>
-                    </div>
-                </div>
-            </div>
-    
-        </div> --}}
+          {{-- <div>
+            <form action="{{ route('allproduct') }}" method="GET" class="mb-4">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Products By Product Name" class="form-control">
+                <button type="submit" class="btn btn-primary mt-2">Search</button>
+                <a href="{{ route('allproduct') }}" class="btn btn-secondary">Reset</a>
+            </form>
+          </div> --}}
 
-        {{-- <form method="GET" action="{{ route('allproducts') }}">
-            <div class="form-group">
-                <label for="catid">Filter by Category:</label>
-                <select class="form-control" id="catid" name="catid">
-                    <option value="">Select Category</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category['categoryId'] }}">{{ $category['categoryName'] }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="brandid">Filter by Brand:</label>
-                <select class="form-control" id="brandid" name="brandid">
-                    <option value="">Select Brand</option>
-                    @foreach ($brands as $brand)
-                        <option value="{{ $brand['productBrandsId'] }}">{{ $brand['productBrandsName'] }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="subcatid">Filter by Subcategory:</label>
-                <select class="form-control" id="subcatid" name="subcatid">
-                    <option value="">Select Subcategory</option>
-                    @foreach ($subcategories as $subcategory)
-                        <option value="{{ $subcategory['subCategoryId'] }}">{{ $subcategory['subCategoryName'] }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Apply Filters</button>
-        </form> --}}
-
-
-
-
-        {{--  --}}
-        <table class="table">
+          <div>
+            <form action="{{ route('allproduct') }}" method="GET" class="mb-4">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Products By Product Name" class="form-control">
+                <button type="submit" class="btn btn-primary mt-2">Search</button>
+                <a href="{{ route('allproduct') }}" class="btn btn-secondary mt-2">Reset</a>
+            </form>
+        </div>
+       
+        <table class="table table-responsive">
             <thead>
                 <tr>
 
@@ -119,6 +45,8 @@
                     <th>productInStock</th>
                     {{-- <th>Created Date</th> --}}
                     <th>productMRPPrice</th>
+                      <th>vendorName</th>
+                      <th>Email & MobileNo</th>
                     <th>Edit</th>
                     <th>Delete</th>
                     <th>View</th>
@@ -127,8 +55,11 @@
             <tbody>
                 @foreach ($products as $product)
                     <tr>
+                        <td>
+                            <img src="{{ $product['prodectImage'] }}" class="img-fluid" height="80px" width="80px" />
+                        </td>
 
-                        <td> <img src="{{ $product['prodectImage'] }}" class="img-fluid" height="80px" width="80px" /></td>
+                        {{-- <td> <img src="{{data:image/png;base64, $product['prodectImage'] }}" class="img-fluid" height="80px" width="80px" /></td> --}}
                         <td>
                             <h5 class="card-title">{{ $product['prodectTitle'] }}</h5>
                         </td>
@@ -141,6 +72,8 @@
                         <td>{{ $product['productInStock'] ? 'Yes' : 'No' }}</td>
                         {{-- <td>{{ $product['createdDate'] }}</td> --}}
                         <td>{{ $product['productMRPPrice'] }}</td>
+                         <td>{{ $product['vendorName'] }}</td>
+                         <td>{{ $product['vendorEmailPlusMobileNo'] }}</td>
                         <td>
                             <a href="{{ url('/updateproduct/' . $product['productId']) }}" class="btn btn-primary">Edit</a> <!-- Link to the updateproduct route with productId -->
                         </td>

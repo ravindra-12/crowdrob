@@ -57,7 +57,7 @@
                         {{-- <a href="demo-landing.html">
                             <img class="logo-default" srcset="images/logo.png, images/logo@2x.png 2x" src="images/Crowdeob.png" alt="Canvas Logo"> --}}
                             <a href="/">
-                                <img class="logo-default" srcset="/images/Crodrob-logo.png, images/Crodrob-logo.png" src="/images/Crodrob-logo.png" alt="Canvas Logo">
+                                <img class="logo-default" srcset="/images/crowdrob-logo.png, images/crowdrob-logo.png" src="/images/crowdrob-logo.png" alt="Canvas Logo">
                             {{-- <img class="logo-dark" srcset="images/logo-dark.png, images/logo-dark@2x.png 2x" src="images/logo-dark@2x.png" alt="Canvas Logo"> --}}
                         </a>
                     </div>
