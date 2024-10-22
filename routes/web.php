@@ -66,12 +66,11 @@ Route::get('career', function () {
 // });
 
 <<<<<<< HEAD
+// Your local changes
 =======
-Route::get('diwalioffer', function(){
-    return view('diwalioffer');
-});
+ // Remote changes
+>>>>>>> remote/main
 
->>>>>>> f963cae (first commit)
 Route::get('careerpost', [CategoriesController::class, 'getCareerPageById']);
 Route::get('careerpage', [CategoriesController::class, 'getcareerPage']);
 Route::put('/update-career-page/{id}', [CategoriesController::class, 'updateCareerPage'])->name('update.career.page');
