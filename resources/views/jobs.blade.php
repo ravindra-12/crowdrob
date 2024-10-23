@@ -14,7 +14,11 @@
 
 	<!-- Core Style -->
 	<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+<<<<<<< HEAD
 
+=======
+<meta name="google-site-verification" content="2qlV85TiHjQaoeW0P745JwBpoG8CBjTxgWnik9i-JkI" />
+>>>>>>> f963cae (first commit)
 <!-- Font Icons -->
 <link rel="stylesheet" href="{{ asset('css/font-icons.css') }}">
 

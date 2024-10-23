@@ -184,6 +184,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-OERcA2HjQzY2nuLZWb8+GHlbX3YV10KXcwXWfQt/rzYJQDAa8C9oL5XnKTpBuaLx" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-QNBmFFtxpGmRaGga1EsIU5FkWnKj97e/nxLJ5OXW3YswxTsejEY3z7AFLZCGkt8S" crossorigin="anonymous"></script>
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> f963cae (first commit)
 @endsection
 </body>
 </html>

@@ -58,6 +58,7 @@
             </div>
         </div> --}}
 
+<<<<<<< HEAD
         <div class="mb-3">
             <label for="isActive" class="form-label">isActive</label>
             <select class="form-select" id="isActive" name="isActive" required>
@@ -66,6 +67,13 @@
                 </option>
                 <option value="1">Active</option>
                 <option value="0">Deactive</option>
+=======
+       <div class="mb-3">
+            <label for="isActive" class="form-label">isActive</label>
+            <select class="form-select" id="isActive" name="isActive" required>
+                <option value="1" {{ $coupondata['isActive'] ? 'selected' : '' }}>Active</option>
+                <option value="0" {{ !$coupondata['isActive'] ? 'selected' : '' }}>Deactive</option>
+>>>>>>> f963cae (first commit)
             </select>
         </div>
 

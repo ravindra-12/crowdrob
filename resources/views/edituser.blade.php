@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Edit User</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
 </head>
 <body>
     @extends('layout')
@@ -13,7 +14,7 @@
   @section('content')
 <div class="container">
     <h3 class="text-center my-4">Edit User</h3>
-    <form action="{{ route('user.update', $user['email']) }}" method="POST" class="shadow-sm p-5 mb-5 bg-body-tertiary rounded">
+    <form id="updateUserForm" method="POST" class="shadow-sm p-5 mb-5 bg-body-tertiary rounded">
         @csrf
         @method('PUT')
     
@@ -68,6 +69,26 @@
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>
+ <script>
+        $('#updateUserForm').on('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            $.ajax({
+                url: "{{ route('user.update', $user['email']) }}", // Laravel route for updating the user
+                method: "PUT", // HTTP method
+                data: $(this).serialize(), // Serialize form data
+                success: function(response) {
+                    alert('User updated successfully!');
+                    // Optionally redirect or update the UI here without page reload
+                     window.location.href = "/allusers";
+                },
+                error: function(xhr) {
+                    alert('Failed to update user. Please try again.');
+                }
+            });
+        });
+    </script>
 @endsection
+
 </body>
 </html>

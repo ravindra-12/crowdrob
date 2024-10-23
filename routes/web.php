@@ -65,6 +65,13 @@ Route::get('career', function () {
 //     return view('carreer');
 // });
 
+<<<<<<< HEAD
+=======
+Route::get('diwalioffer', function(){
+    return view('diwalioffer');
+});
+
+>>>>>>> f963cae (first commit)
 Route::get('careerpost', [CategoriesController::class, 'getCareerPageById']);
 Route::get('careerpage', [CategoriesController::class, 'getcareerPage']);
 Route::put('/update-career-page/{id}', [CategoriesController::class, 'updateCareerPage'])->name('update.career.page');
@@ -105,11 +112,19 @@ Route::get('/getallvendororder/{id}', [OrderController::class, 'GetAllOrdersByVe
 
 
 Route::get('deliverycities', [OrderController::class, 'GetActiveDeliveryCities']);
+<<<<<<< HEAD
 Route::get('allvendororder', [OrderController::class, 'GetAllVendorOrder']);
 Route::get('allvendororder', [OrderController::class, 'GetAllVendorOrder']);
 Route::get('orderprofitloss', [OrderController::class, 'GetAllOrderProfitAndLossList']);
 Route::get('order', [OrderController::class, 'GetAllUserOrders']);
 Route::get('getallorder', [OrderController::class, 'GetAllOrders']);
+=======
+Route::get('allvendororder', [OrderController::class, 'GetAllVendorOrder'])->name('allvendororder');
+Route::get('allvendororder', [OrderController::class, 'GetAllVendorOrder'])->name('allvendororder');
+Route::get('orderprofitloss', [OrderController::class, 'GetAllOrderProfitAndLossList']);
+Route::get('order', [OrderController::class, 'GetAllUserOrders']);
+Route::get('getallorder', [OrderController::class, 'GetAllOrders'])->name('getallorder');
+>>>>>>> f963cae (first commit)
 Route::get('oredrstatus', [OrderController::class, 'OrderPlaceStatus']);
 Route::get('sellingdetails/{id}', [OrderController::class, 'GetallNetSellByVendorID']);
 
@@ -243,6 +258,10 @@ Route::get('add_subcategory', [ApiController::class, 'getAllCategory']);
 Route::post('/subcategory/add', [ApiController::class, 'addSubcategory'])->name('subcategory.store');
 Route::delete('/subcategory/{id}', [CategoriesController::class, 'deleteSubCategory'])->name('subcategory.delete');
 
+Route::get('/subcategory/edit/{id}', [CategoriesController::class, 'editSubcategory'])->name('subcategory.edit');
+Route::put('/subcategory/update/{id}', [CategoriesController::class, 'updateSubcategory'])->name('subcategory.update');
+
+
 // ADDPRODUCT ROUTES
 // Route::get('add_Product', function () {
 //     return view('add_product');
@@ -261,6 +280,8 @@ Route::post('/add/store', [ApiController::class, 'addStore'])->name('add.store')
 Route::get('/user/edit/{email}', [ApiController::class, 'getUserByEmail']);
 Route::put('/user/{email}', [ApiController::class, 'update'])->name('user.update'); // Change method to PUT
 Route::get('/user/view/{email}', [ApiController::class, 'ViewUserByEmail']);
+Route::delete('/user/{id}', [UserController::class, 'UserDeleteByEmail'])->name('user.delete');
+
 
 // VENDOR ROUTE
 Route::get('/vendor/edit/{id}', [ApiController::class, 'getvendorbyid']);
@@ -276,13 +297,31 @@ Route::get('/mrpcatdetails/{categoryId}', [ApiController::class, 'showUpdateForm
 Route::post('/mrpcatdetails/{categoryId}', [ApiController::class, 'updatePriceByCategoryId'])->name('updatePrice');
 
 
+
+
+Route::post('/mrpupdateinrbycategory/{categoryId}', [ApiController::class, 'updatePriceByCategoryIdInINR'])->name('mrpupdatebycategoryinInr');
+Route::get('/mrpupdatebycategory/{categoryId}', [ApiController::class, 'UpdateMRIinINR'])->name('mrpupdatebycategoryinr');
+
+
+// 
+
+
+Route::get('/mrpupdate/{id}', [ApiController::class, 'GetMrpforupade']);
+Route::put('/mrpinr/mrpupdate/{id}', [ApiController::class, 'updateProductPriceINR'])->name('mrpinr.update');
+
+
+
 // 
 Route::group(['middleware' => ['AuthCheck']], function () {
     Route::get('/productinapproval', [CategoriesController::class, 'productInApproval']);
     Route::get('/category', [CategoriesController::class, 'getAllCategory']);
     Route::get('/updatemrpbycat', [ApiController::class, 'getByCategorieId']);
     Route::get('/updatemrp', [ApiController::class, 'getallproductprice']);
+<<<<<<< HEAD
     Route::get('/dashboard', [ApiController::class, 'getallvendors']);
+=======
+    Route::get('/dashboard', [ApiController::class, 'getallvendors'])->name('dashboard');
+>>>>>>> f963cae (first commit)
     Route::get('/allvendor', [ApiController::class, 'getData'])->name('allvendor');
     Route::get('/allproducts', [ApiController::class, 'getAllProductData'])->name('allproduct');
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -300,12 +339,22 @@ Route::group(['middleware' => ['AuthCheck']], function () {
 
 // Approval Routes
 
+<<<<<<< HEAD
 Route::get('/product/approve/{productId}', [CategoriesController::class, 'approveProduct'])->name('product.approve');
 Route::get('/product/approvecancel/{productId}', [CategoriesController::class, 'CancelledApproval'])->name('product.cancelapprove');
+=======
+// Route::get('/product/approve/{productId}', [CategoriesController::class, 'approveProduct'])->name('product.approve');
+// Route::get('/product/approvecancel/{productId}', [CategoriesController::class, 'CancelledApproval'])->name('product.cancelapprove');
+
+Route::get('/product/approve/{productId}', [CategoriesController::class, 'approveProduct'])->name('product.approve');
+Route::get('/product/cancel/{productId}', [CategoriesController::class, 'CancelledApproval'])->name('product.cancelapprove');
+Route::post('/product/bulkapprove', [CategoriesController::class, 'bulkApprove'])->name('product.bulkapprove');
+Route::post('/product/bulkcancelapprove', [CategoriesController::class, 'bulkCancelApprove'])->name('product.bulkcancelapprove');
+>>>>>>> f963cae (first commit)
 //  Updtate ProductDiscount
 
 Route::get('/discountprice/{id}', [ApiController::class, 'updateproductdiscountprice']);
-Route::get('updateproductdiscount', [ApiController::class, 'getproductforDiscount']);
+Route::get('updateproductdiscount', [ApiController::class, 'getproductforDiscount'])->name('updateproductdiscount');
 Route::put('/discountprice/discountupdate/{id}', [ApiController::class, 'updateDiscountProductPrice'])->name('discount.update');
 
 // End ProductDiscount
@@ -365,13 +414,35 @@ Route::put('/mrp/mrpupdatebycat/{id}', [ApiController::class, 'updtaePriceBycate
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 
+<<<<<<< HEAD
 
+=======
+// 
+
+Route::post('/api/add-task', [CategoriesController::class, 'AddTask']);
+Route::get('addtask', function(){
+    return view('addtask');
+});
+>>>>>>> f963cae (first commit)
 
 // ExPoRt DaTa
 
 Route::get('/export-alluser-details', [ApiController::class, 'exportAllUserDetailsToExcel']);
 
 
+<<<<<<< HEAD
+=======
+// Delevery
+
+Route::get('/deliveryorders', [OrderController::class, 'getAllShippedOrders'])->name('delivery.orders');
+Route::post('/delivery/assign', [OrderController::class, 'assignOrderToAgent'])->name('delivery.assign');
+
+
+// Route::get('/demo', [OrderController::class, 'GetBillingGenerate']);
+Route::get('/generate-pdf/{orderId}', [OrderController::class, 'GetBillingGenerate'])->name('generate.pdf');
+// End Delivery
+
+>>>>>>> f963cae (first commit)
 
 
 

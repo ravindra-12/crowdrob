@@ -40,6 +40,10 @@
                 <th>User Roles:</th>
                 <th>Edit</th>
                 <th>View</th>
+<<<<<<< HEAD
+=======
+                <th>Delete</th>
+>>>>>>> f963cae (first commit)
             </tr>
         </thead>
         <tbody>
@@ -53,6 +57,18 @@
                     <td>{{ $user['userRoles'] }}</td>
                     <td><a href="{{ url('/user/edit/' . $user['email']) }}" class="btn btn-primary">Update</a></td>
                     <td><a href="{{ url('/user/view/' . $user['email']) }}" class="btn btn-info">View</a></td>
+<<<<<<< HEAD
+=======
+                     <td>
+                        <form action="{{ route('user.delete', ['id' => $user['userID']]) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
+                        </form>
+                    </td>
+
+
+>>>>>>> f963cae (first commit)
                 </tr>
             @endforeach
         </tbody>

@@ -13,7 +13,7 @@
     @section('content')
 <div class="container">
     <h3 class="text-center my-4">Update Category</h3>
-    <form action="{{ route('category.update', ['id' =>  $product['categoryId']])  }}" method="POST" class="border p-5 shadow-sm bg-body-tertiary rounded" enctype="multipart/form-data">
+    <form id="updatecategory" class="border p-5 shadow-sm bg-body-tertiary rounded" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -62,6 +62,35 @@
         <button type="submit" class="btn btn-primary btn-block">Update Category</button>
     </form>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#updatecategory').on('submit', function(e) {
+            e.preventDefault();
+    
+            var formData = new FormData(this); // Create a FormData object
+            $.ajax({
+                url: "{{ route('category.update', ['id' =>  $product['categoryId']])  }}", // Replace with the route to your update method
+                type: 'POST',
+                data: formData,
+                processData: false, // Prevent jQuery from automatically processing the data
+                contentType: false, // Prevent jQuery from setting contentType
+                success: function(response) {
+                    if (response.success) {
+                        alert('Category updated successfully.');
+                        window.location.href = "/category";
+                    } else {
+                        alert('Failed to update product.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error updating Category: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+    </script>
 @endsection
 </body>
 </html>

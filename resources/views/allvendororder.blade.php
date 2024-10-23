@@ -7,7 +7,17 @@
                 <h3 class="text-center">All Vendor Orders</h3>
             </div>
         </div>
+<<<<<<< HEAD
 
+=======
+        <div>
+            <form action="{{ route('allvendororder') }}" method="GET" class="mb-4">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search By Vendor ID, Vendor Name" class="form-control">
+                <button type="submit" class="btn btn-primary mt-2">Search</button>
+                <a href="{{ route('allvendororder') }}" class="btn btn-secondary">Reset</a>
+            </form>
+        </div>
+>>>>>>> f963cae (first commit)
         <table class="table table-responsive">
             <thead>
                 <tr>

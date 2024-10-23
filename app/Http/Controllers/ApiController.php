@@ -4,7 +4,7 @@
 
 namespace App\Http\Controllers;
 use Carbon\Carbon;
-use Flasher\Prime\FlasherInterface;
+use Flasher\Prime\FlasherInterface;        
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -143,12 +143,21 @@ class ApiController extends Controller
             ]);
 
             // dd($response->json());
-        if ($response->successful()) {
+       if ($response->successful()) {
+    if ($request->ajax()) {
+        return response()->json(['success' => "Vendor Updated Successfully"]);
+         
+    } else {
+        return redirect('/allvendor')->with('success', 'Vendor updated successfully');
+    }
+} else {
+    if ($request->ajax()) {
+        return response()->json(['error' => 'Failed to update user'], 400);
+    } else {
+        return redirect()->back()->with('error', 'Failed to update user');
+    }
+}
 
-            return redirect('/allvendor')->with('success', 'Vendor updated successfully');
-        } else {
-            return redirect()->back()->with('error', 'Failed to update user');
-        }
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'Error updating user');
     }
@@ -348,6 +357,8 @@ public function updateProduct(Request $request, $id)
             //  dd($response->json());
 
         if ($response->successful()) {
+            
+            
             return redirect('allproducts')->with('success', 'Product updated successfully');
         } else {
             Log::error('API request failed: ' . $response->status() . ' - ' . $response->body());
@@ -383,18 +394,33 @@ public function updateProduct(Request $request, $id)
     }
 
 
+<<<<<<< HEAD
     public function getallproductprice(){
+=======
+    public function getallproductprice(Request $request){
+>>>>>>> f963cae (first commit)
         try {
             $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-                ->get('https://crowdrobapi.tech/api/Product/GetAllProduct');
+                ->get('https://cd1.crowdrob.com/api/Product/GetAllProductForMRPUpdate');
     
             if ($response->successful()) {
-                $products = $response->json();
-                $totalProducts = count($products);
+                $productmrp = $response->json();
+                $totalProducts = count($productmrp);
                 // dd($products);
+                
+                 // 
+                $currentPage = LengthAwarePaginator::resolveCurrentPage();
+                $itemCollection = collect($productmrp);
+                $perPage = 10;
+                $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+                $paginatedItems= new LengthAwarePaginator($currentPageItems , count($itemCollection), $perPage);
+                $paginatedItems->setPath($request->url());
+    
+            //  
+                
                 $username = session('username');
                 // Iterate over each user and access the username
-               return view('updateproductprice', ['products' => $products], compact('username'));
+               return view('updateproductprice', ['productmrp' => $paginatedItems], compact('username'));
             } else {
                 return view('api.error');
             }
@@ -423,6 +449,26 @@ public function updateProduct(Request $request, $id)
         }
     }
     
+    
+    public function GetMrpforupade($id){
+        try {
+            $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+                ->get("https://crowdrobapi.tech/api/Product/GetProductById?productId={$id}");
+    
+            if ($response->successful()) {
+                $productData = $response->json();
+            //  dd($productData);
+                return view('mrpupdateinr', ['product' => $productData]);
+            } else {
+                return view('api.error');
+            }
+        } catch (\Exception $e) {
+            return view('api.error');
+        }
+    }
+    
+    
+    
     public function viewMrpByCat($id){
         try {
             $response = Http::withOptions(['verify' => base_path('cacert.pem')])
@@ -441,23 +487,86 @@ public function updateProduct(Request $request, $id)
     }
 
 
+    // public function updateProductPrice(Request $request, $id)
+    // {
+    //     try {
+    //         $price = $request->input('price');
+    
+    //         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+    //             ->put("https://crowdrobapi.tech/api/Product/UpdateProductMPRPriceByProductId?ProductId={$id}&price={$price}");
+    
+    //         if ($response->successful()) {
+    //             return redirect()->to('/updatemrp')->with('toast_success', 'Product price updated successfully');
+    //         } else {
+    //             return redirect()->back()->with('error', 'Failed to update product price');
+    //         }
+    //     } catch (\Exception $e) {
+    //         return redirect()->back()->with('error', 'Error updating product price');
+    //     }
+    // }
+    
+
+
     public function updateProductPrice(Request $request, $id)
+{
+    try {
+        $price = $request->input('price');
+
+        // Make the API request to update the MRP price
+        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->put("https://crowdrobapi.tech/api/Product/UpdateProductMPRPriceByProductId?ProductId={$id}&price={$price}");
+
+        if ($response->successful()) {
+            // Return success as a JSON response
+            return response()->json(['success' => true, 'message' => 'Product price updated successfully']);
+        } else {
+            // Return failure as a JSON response
+            return response()->json(['success' => false, 'message' => 'Failed to update product price']);
+        }
+    } catch (\Exception $e) {
+        // Return error as a JSON response
+        return response()->json(['success' => false, 'message' => 'Error updating product price']);
+    }
+}
+    
+    //  public function updateProductPriceINR(Request $request, $id)
+    // {
+    //     try {
+    //         $price = $request->input('price');
+    
+    //         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+    //             ->put("https://crowdrobapi.tech/api/Product/UpdateProductPriceForAmountByProductId?ProductId={$id}&price={$price}");
+    
+    //         if ($response->successful()) {
+    //             return redirect()->to('/updatemrp')->with('toast_success', 'Product price updated successfully');
+    //         } else {
+    //             return redirect()->back()->with('error', 'Failed to update product price');
+    //         }
+    //     } catch (\Exception $e) {
+    //         return redirect()->back()->with('error', 'Error updating product price');
+    //     }
+    // }
+    
+    public function updateProductPriceINR(Request $request, $id)
     {
         try {
             $price = $request->input('price');
     
             $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-                ->put("https://crowdrobapi.tech/api/Product/UpdateProductMPRPriceByProductId?ProductId={$id}&price={$price}");
+                ->put("https://crowdrobapi.tech/api/Product/UpdateProductPriceForAmountByProductId?ProductId={$id}&price={$price}");
     
             if ($response->successful()) {
-                return redirect()->to('/updatemrp')->with('toast_success', 'Product price updated successfully');
+                return response()->json(['success' => true, 'message' => 'Price updated successfully.']);
             } else {
-                return redirect()->back()->with('error', 'Failed to update product price');
+                return response()->json(['success' => false, 'message' => 'Failed to update price.']);
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error updating product price');
+            return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()]);
         }
     }
+    
+
+
     
     public function updtaePriceBycategorie(Request $request, $id)
     {
@@ -483,7 +592,7 @@ public function getallusers(Request $request)
 {
     try {
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-            ->get('https://crowdrobapi.tech/api/User/User/GetAllUser');
+            ->get('https://crowdrobapi.tech/api/User/GetAllUser');
 
         if ($response->successful()) {
             $users = $response->json();
@@ -590,10 +699,17 @@ public function update(Request $request, $email)
 
             // dd($response->json());
         if ($response->successful()) {
-
-            return redirect('/allusers')->with('success', 'User updated successfully');
+            if ($request->ajax()) {
+                return response()->json(['success' => 'User updated successfully']);
+            } else {
+                return redirect('/allusers')->with('success', 'User updated successfully');
+            }
         } else {
-            return redirect()->back()->with('error', 'Failed to update user');
+            if ($request->ajax()) {
+                return response()->json(['error' => 'Failed to update user'], 400);
+            } else {
+                return redirect()->back()->with('error', 'Failed to update user');
+            }
         }
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'Error updating user');
@@ -706,7 +822,7 @@ public function viewvendor($id)
    
     // }
 
-    public function getallvendors()
+    public function getallvendors(Request $request)
     {
         try {
             // Get vendors data
@@ -738,7 +854,7 @@ public function viewvendor($id)
 
            // Get all users
 $usersresponse = Http::withOptions(['verify' => base_path('cacert.pem')])
-->get('https://crowdrobapi.tech/api/User/User/GetAllUser');
+->get('https://crowdrobapi.tech/api/User/GetAllUser');
 
 if ($usersresponse->successful()) {
 $users = $usersresponse->json();
@@ -771,6 +887,25 @@ $totalStores = count($stores);
 return view('api.error');
 }
 
+$taskResponse = Http::withOptions(['verify' => base_path('cacert.pem')])
+->get('https://cd1.crowdrob.com//api/TaskTable/GetAllTask');
+
+// dd($taskResponse->json());
+
+if ($taskResponse->successful()) {
+$task = $taskResponse->json();
+
+$currentPage = LengthAwarePaginator::resolveCurrentPage();
+$itemCollection = collect($task);
+$perPage = 8;
+$currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+$paginatedItems= new LengthAwarePaginator($currentPageItems , count($itemCollection), $perPage);
+$paginatedItems->setPath($request->url());
+// Iterate over each user and access the username
+
+} else {
+return view('api.error');
+}
 
     // Access the username from the session
     $username = session('username');
@@ -786,13 +921,15 @@ return view('api.error');
                 'totalUsers' => $totalUsers,
                 'users' => $users,
                 'username' => $username,
-                'totalStores' => $totalStores
+                'totalStores' => $totalStores,
+                  'task' => $paginatedItems,
             ], compact('username'));
         } catch (RequestException $e) {
             // Handle other exceptions
             return view('api.error');
         }
     }
+<<<<<<< HEAD
 
     
     public function getAllProductData(Request $request)
@@ -833,80 +970,124 @@ return view('api.error');
             } catch (\Exception $e) {
                 return view('api.error')->withErrors('An error occurred: ' . $e->getMessage());
             }
+=======
+
+    
+    // public function getAllProductData(Request $request)
+
+    // {
+
+    //         try {
+    //             $searchQuery = $request->input('search'); // Get the search query
+        
+    //             if ($searchQuery) {
+    //                 // Call the search API with the search query
+    //                 $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+    //                     ->get('https://crowdrobapi.tech/api/Product/SearchProduct', [
+    //                         'Product' => $searchQuery
+    //                     ]);
+    //             } else {
+    //                 // Call the API to get all products if no search query is present
+    //                 $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+    //                     ->get('https://crowdrobapi.tech/api/Product/GetAllProduct');
+    //             }
+        
+    //             if ($response->successful()) {
+    //                 $products = $response->json();
+    //                 $allproducts = count($products);
+    //                 $username = session('username');
+    //                 // Pagination setup
+    //                 $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    //                 $itemCollection = collect($products);
+    //                 $perPage = 10;
+    //                 $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+    //                 $paginatedItems = new LengthAwarePaginator($currentPageItems, count($itemCollection), $perPage);
+    //                 $paginatedItems->setPath($request->url());
+        
+    //                 return view('allproducts', ['products' => $paginatedItems, 'allproducts' => $allproducts], compact('username'));
+    //             } else {
+    //                 return view('api.error')->withErrors('Failed to fetch products.');
+    //             }
+    //         } catch (\Exception $e) {
+    //             return view('api.error')->withErrors('An error occurred: ' . $e->getMessage());
+    //         }
+    // }
+
+public function getAllProductData(Request $request)
+{
+    try {
+        // Fetch products
+        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->get('https://crowdrobapi.tech/api/Product/GetAllProduct');
+        
+        // Fetch categories
+        $categoriesResponse = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->get('https://crowdrobapi.tech/api/Category/Category/GetAllCategory');
+        $categories = $categoriesResponse->json();
+
+        // Fetch subcategories
+        $subcategoriesResponse = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->get('https://crowdrobapi.tech/api/SubCategory/GetAllSubCategory');
+        $subcategories = $subcategoriesResponse->json();
+
+        if ($response->successful()) {
+            $products = $response->json();
+
+            // dd($products);
+
+            $allproducts = count($products);
+
+            $search = $request->input('search');
+            $categoryId = $request->input('category');
+            $subCategoryId = $request->input('subcategory');
+
+            // Filter products by search, category, and subcategory
+            if ($search) {
+                $products = array_filter($products, function ($product) use ($search) {
+                    return  stripos($product['prodectTitle'], $search) !== false ||
+                            stripos($product['vendorName'], $search) !== false ||
+                            stripos($product['productPrice'], $search) !== false;
+                });
+            }
+            if ($categoryId) {
+                $products = array_filter($products, function ($product) use ($categoryId) {
+                    return $product['categoryId'] == $categoryId;
+                });
+            }
+            if ($subCategoryId) {
+                $products = array_filter($products, function ($product) use ($subCategoryId) {
+                    return $product['subCategory'] == $subCategoryId;
+                });
+            }
+
+            // Pagination logic
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $itemCollection = collect($products);
+            $perPage = 10;
+            $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+            $paginatedItems = new LengthAwarePaginator($currentPageItems, count($itemCollection), $perPage);
+
+            // Pass query parameters to pagination
+            $paginatedItems->appends($request->all());
+            
+            $paginatedItems->setPath($request->url());
+
+            $username = session('username');
+
+            return view('allproducts', [
+                'products' => $paginatedItems,
+                'allproducts' => $allproducts,
+                'categories' => $categories,
+                'subcategories' => $subcategories
+            ], compact('username'));
+        } else {
+            return view('api.error');
+        }
+    } catch (RequestException $e) {
+        return view('api.error');
+>>>>>>> f963cae (first commit)
     }
-
-//  public function getAllProductData(Request $request)
-// {
-//     // Get filter parameters from the request
-//     $catid = $request->input('catid');
-//     $brandid = $request->input('brandid');
-//     $subcatid = $request->input('subcatid');
-
-//     // Initialize variable to store products
-//     $products = [];
-
-//     // Fetch products based on filter parameters
-//     if ($catid != null) {
-//         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-//             ->get("https://crowdrobapi.tech/api/Product/getallproductbycategoryId?categoryId={$catid}");
-
-//         if ($response->successful()) {
-//             $products = $response->json();
-//         }
-//     } elseif ($brandid != null) {
-//         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-//             ->get("https://crowdrobapi.tech/api/Product/getallproductbyBrandId?ProductBrandsId={$brandid}");
-
-//         if ($response->successful()) {
-//             $products = $response->json();
-//         }
-//     } elseif ($subcatid != null) {
-//         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-//             ->get("https://crowdrobapi.tech/api/Product/getallproductbySubcategoryId?SubCategoryId={$subcatid}");
-
-//         if ($response->successful()) {
-//             $products = $response->json();
-//         }
-//     } else {
-//         // Fetch all products
-//         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
-//             ->get('https://crowdrobapi.tech/api/Product/GetAllProduct');
-
-//         if ($response->successful()) {
-//             $products = $response->json();
-//         }
-//     }
-
-//     // Fetch other data needed for the view
-//     $response2 = Http::withOptions(['verify' => base_path('cacert.pem')])
-//         ->get('https://crowdrobapi.tech/api/Category/Category/GetAllCategory');
-
-//     $response3 = Http::withOptions(['verify' => base_path('cacert.pem')])
-//         ->get('https://crowdrobapi.tech/api/Brand/GetAllBrand');
-
-//     $response4 = Http::withOptions(['verify' => base_path('cacert.pem')])
-//         ->get('https://crowdrobapi.tech/api/SubCategory/GetAllSubCategory');
-
-//     // Check if all requests are successful before rendering the view
-//     if ($response->successful() && $response2->successful() && $response3->successful() && $response4->successful()) {
-//         $allproducts = count($products);
-//         $username = session('username');
-//         $categories = $response2->json();
-//         $brands = $response3->json();
-//         $subcategories = $response4->json();
-
-//         return view('allproducts', [
-//             'products' => $products,
-//             'allproducts' => $allproducts,
-//             'categories' => $categories,
-//             'brands' => $brands,
-//             'subcategories' => $subcategories,
-//             'username' => $username,
-//         ]);
-//     } else {
-//         return view('api.error');
-//     }
-// }
+}
 
 
 
@@ -1076,7 +1257,7 @@ public function getAllUserData()
     try {
         // Get all users
         $usersresponse = Http::withOptions(['verify' => base_path('cacert.pem')])
-            ->get('https://crowdrobapi.tech/api/User/User/GetAllUser');
+            ->get('https://crowdrobapi.tech/api/User/GetAllUser');
 
         if ($usersresponse->successful()) {
             $users = $usersresponse->json();
@@ -1104,8 +1285,45 @@ public function getAllUserData()
 }
 // 
 
+// public function updatePriceByCategoryId(Request $request, $categoryId)
+// {
+//     $price = $request->price;
+//     $url = "https://crowdrobapi.tech/api/Product/UpdateAllProductMPRPriceByCategoryId?CategoryId=$categoryId&price=$price";
+
+//     $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+//         ->put($url);
+
+//     if ($response->successful()) {
+//         return redirect('/allproducts')->with('toast_success', 'Price updated successfully');
+//     } else {
+//         return view('api.error');
+//     }
+// }
+
+
+// public function updatePriceByCategoryIdInINR(Request $request, $categoryId)
+// {
+//     $price = $request->price;
+//     $url = "https://crowdrobapi.tech/api/Product/UpdateProductCategoryPriceByAmount?CategoryId=$categoryId&price=$price";
+
+//     $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+//         ->put($url);
+
+//     if ($response->successful()) {
+//         return redirect('/allproducts')->with('toast_success', 'Price updated successfully');
+//     } else {
+//         return view('api.error');
+//     }
+// }
+
+
 public function updatePriceByCategoryId(Request $request, $categoryId)
 {
+    // Validate the request
+    $request->validate([
+        'price' => 'required|numeric',
+    ]);
+
     $price = $request->price;
     $url = "https://crowdrobapi.tech/api/Product/UpdateAllProductMPRPriceByCategoryId?CategoryId=$categoryId&price=$price";
 
@@ -1113,17 +1331,43 @@ public function updatePriceByCategoryId(Request $request, $categoryId)
         ->put($url);
 
     if ($response->successful()) {
-        return redirect('/allproducts')->with('toast_success', 'Price updated successfully');
+        return response()->json(['success' => true, 'message' => 'Price updated successfully']);
     } else {
-        return view('api.error');
+        return response()->json(['success' => false, 'message' => 'Failed to update price']);
     }
 }
+
+public function updatePriceByCategoryIdInINR(Request $request, $categoryId)
+{
+    // Validate the request
+    $request->validate([
+        'price' => 'required|numeric',
+    ]);
+
+    $price = $request->price;
+    $url = "https://crowdrobapi.tech/api/Product/UpdateProductCategoryPriceByAmount?CategoryId=$categoryId&price=$price";
+
+    $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+        ->put($url);
+
+    if ($response->successful()) {
+        return response()->json(['success' => true, 'message' => 'Price updated successfully']);
+    } else {
+        return response()->json(['success' => false, 'message' => 'Failed to update price']);
+    }
+}
+
 
 public function showUpdateForm($categoryId)
 {
     return view('updatepriceform', ['categoryId' => $categoryId]);
 }
 
+
+public function UpdateMRIinINR($categoryId)
+{
+    return view('updatepriceinr', ['categoryId' => $categoryId]);
+}
 
 
 // SubCategory Add
@@ -1286,24 +1530,49 @@ public function getsubCategory(){
 
 public function addSubcategory(Request $request)
 {
+    // Validate the form inputs
     $validatedData = $request->validate([
+<<<<<<< HEAD
         // 'subCategoryId' => 'required|integer',
+=======
+>>>>>>> f963cae (first commit)
         'subCategoryName' => 'required|string',
         'categoryId' => 'required|integer',
+        'subCategoryImage' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:2048', // Validate the image file
     ]);
 
     try {
+<<<<<<< HEAD
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
         ->post("https://crowdrobapi.tech/api/SubCategory/AddSubCategory", [
             // 'subCategoryId' => $validatedData['subCategoryId'],
             'subCategoryName' => $validatedData['subCategoryName'],
             'categoryId' => $validatedData['categoryId'],
         ]);
+=======
+        // Convert image to Base64 like in your reference
+        $imageField = 'subCategoryImage';
+        if ($request->hasFile($imageField)) {
+            $file = $request->file($imageField);
+            $imageData = base64_encode(file_get_contents($file));
+            // Add the correct MIME type (jpg, png, etc.) for base64 data
+            $validatedData[$imageField] = 'data:image/' . $file->getClientOriginalExtension() . ';base64,' . $imageData;
+        } else {
+            return back()->with('error', 'Please upload a valid image.');
+        }
+>>>>>>> f963cae (first commit)
 
-        // dd($response->json());
+        // Send the data to the API
+        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->post("https://crowdrobapi.tech/api/SubCategory/AddSubCategory", [
+                'subCategoryName' => $validatedData['subCategoryName'],
+                'categoryId' => $validatedData['categoryId'],
+                'subCategoryImage' => $validatedData['subCategoryImage'], // Send image as base64
+            ]);
+
+        // Handle the response
         if ($response->successful()) {
-            return redirect('/subcategory')->with('success', 'Subcategory Added successfully');
-           
+            return redirect('/subcategory')->with('success', 'Subcategory added successfully.');
         } else {
             return back()->with('error', 'Failed to add subcategory. Please try again.');
         }
@@ -1781,19 +2050,53 @@ public function showResetPasswordForm(Request $request)
 
 }
 
-public function getproductforDiscount(){
+public function getproductforDiscount(Request $request){
 
     try {
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
             ->get('https://crowdrobapi.tech/api/Product/GetAllProduct');
 
         if ($response->successful()) {
-            $products = $response->json();
-            $totalProducts = count($products);
+            $productsdiscount = $response->json();
+            $totalProducts = count($productsdiscount);
             // dd($products);
+
+            $categoriesResponse = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->get('https://crowdrobapi.tech/api/Category/Category/GetAllCategory');
+             $categories = $categoriesResponse->json();
+
+            //  dd($categories);
+            // Retrieve search query from request
+            $search = $request->input('search');
+            $categoryId = $request->input('category');
+            // Filter vendors based on search criteria
+            if ($search) {
+                $productsdiscount = array_filter($productsdiscount, function ($productsdiscount) use ($search) {
+                    return  stripos($productsdiscount['vendorName'], $search) !== false;
+                });
+            }
+
+            if ($categoryId) {
+                $productsdiscount = array_filter($productsdiscount, function ($productsdiscount) use ($categoryId) {
+                    return $productsdiscount['categoryId'] == $categoryId;
+                });
+            }
+            // 
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $itemCollection = collect($productsdiscount);
+            $perPage = 10;
+            $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+            $paginatedItems = new LengthAwarePaginator($currentPageItems, count($itemCollection), $perPage);
+            $paginatedItems->appends($request->all());
+            $paginatedItems->setPath($request->url());
+
+            // 
+
+
+
             $username = session('username');
             // Iterate over each user and access the username
-           return view('updatediscountprice', ['products' => $products], compact('username'));
+           return view('updatediscountprice', ['productsdiscount' => $paginatedItems], compact('username', 'categories'));
         } else {
             return view('api.error');
         }
@@ -1841,9 +2144,14 @@ public function updateDiscountProductPrice(Request $request, $id)
             ]);
 
         if ($response->successful()) {
+<<<<<<< HEAD
             return redirect()->to('/updateproductdiscount')->with('success', 'Product discount price updated successfully');
+=======
+            // return redirect()->to('/updateproductdiscount')->with('success', 'Product discount price updated successfully');
+            return response()->json(["success" => "Product discount price updated successfully"]);
+>>>>>>> f963cae (first commit)
         } else {
-            return redirect()->back()->with('error', 'Failed to update product price');
+           return response()->json(["failed" => "Failed to update product price"]);
         }
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'Error updating product price');
@@ -1863,21 +2171,62 @@ public function UpdateAllProductDeals(Request $request){
         if ($response->successful()) {
             $products = $response->json();
             $totalProducts = count($products);
+<<<<<<< HEAD
              // 
              $search = $request->input('search');
 
              if ($search) {
                  $products = array_filter($products, function ($product) use ($search) {
                      return stripos($product['prodectTitle'], $search) !== false;
+=======
+
+            $categoriesResponse = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->get('https://crowdrobapi.tech/api/Category/Category/GetAllCategory');
+        $categories = $categoriesResponse->json();
+
+
+
+             // 
+             $search = $request->input('search');
+             $categoryId = $request->input('category');
+
+             if ($search) {
+                 $products = array_filter($products, function ($product) use ($search) {
+                     return stripos($product['vendorName'], $search) !== false ||
+                     stripos($product['prodectTitle'], $search) !== false;
+>>>>>>> f963cae (first commit)
                           
                  });
              }
 
+<<<<<<< HEAD
+=======
+             if ($categoryId) {
+                $products = array_filter($products, function ($product) use ($categoryId) {
+                    return $product['categoryId'] == $categoryId;
+                });
+            }
+
+>>>>>>> f963cae (first commit)
              // 
             // dd($products);
             $username = session('username');
             // Iterate over each user and access the username
-           return view('UpdateAllProductDeals', ['products' => $products], compact('username'));
+
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $itemCollection = collect($products);
+            $perPage = 10;
+            $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+            $paginatedItems = new LengthAwarePaginator($currentPageItems, count($itemCollection), $perPage);
+
+            // Pass query parameters to pagination
+            $paginatedItems->appends($request->all());
+            
+            $paginatedItems->setPath($request->url());
+            
+
+             // 
+           return view('UpdateAllProductDeals', ['products' => $paginatedItems], compact('username', 'categories'));
         } else {
             return view('api.error');
         }
@@ -1951,7 +2300,11 @@ public function exportAllUserDetailsToExcel()
 {
     try {
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+<<<<<<< HEAD
             ->get('https://crowdrobapi.tech/api/User/User/GetAllUser');
+=======
+            ->get('https://crowdrobapi.tech/api/User/GetAllUser');
+>>>>>>> f963cae (first commit)
 
         if ($response->successful()) {
             $users = $response->json();

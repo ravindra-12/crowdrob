@@ -34,7 +34,11 @@
     <meta property="og:image:height" content="630">
     <meta property="og:url" content="{{ url('/') }}">
     <meta property="og:type" content="website">
+<<<<<<< HEAD
 
+=======
+<meta name="google-site-verification" content="2qlV85TiHjQaoeW0P745JwBpoG8CBjTxgWnik9i-JkI" />
+>>>>>>> f963cae (first commit)
     <!-- Structured Data -->
     <script type="application/ld+json">
     {

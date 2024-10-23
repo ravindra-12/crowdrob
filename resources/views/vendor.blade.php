@@ -20,7 +20,11 @@
  <link rel="icon" href="{{ asset('images/crowdrob-logo.png') }}" type="image/png">
 <!-- Custom CSS -->
 <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+<<<<<<< HEAD
 
+=======
+<meta name="google-site-verification" content="2qlV85TiHjQaoeW0P745JwBpoG8CBjTxgWnik9i-JkI" />
+>>>>>>> f963cae (first commit)
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<!-- Document Title

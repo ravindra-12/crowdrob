@@ -88,4 +88,18 @@ class UserController extends Controller
     }
 
 
+  public function UserDeleteByEmail($id)
+    {
+        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+                        ->delete("https://crowdrobapi.tech/api/User/DeleteUser?UserId=$id");
+    
+        if($response->successful()){
+            return redirect()->back()->with('success', 'User Deleted Successfully');
+        }
+    
+        return redirect()->back()->with('error', 'Failed to delete user');
+    }
+
+
+
 }

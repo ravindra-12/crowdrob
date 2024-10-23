@@ -331,6 +331,16 @@
                   <p>Getallpaymentwithdrawal</p>
                 </a>
               </li>
+<<<<<<< HEAD
+=======
+              
+               <li class="nav-item">
+                <a href="/deliveryorders" class="nav-link  {{ request()->is('deliveryorders') ? "active" : ""}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>OrderAsignToDeleveryagent</p>
+                </a>
+              </li>
+>>>>>>> f963cae (first commit)
 
 
               <li class="nav-item">
@@ -381,7 +391,11 @@
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
+<<<<<<< HEAD
     <strong>Copyright &copy; 2014-2021 <a href="">crowdrob.com</a>.</strong>
+=======
+    <strong>Copyright &copy; 2024 <a href="">crowdrob.com</a>.</strong>
+>>>>>>> f963cae (first commit)
     All rights reserved.
    
   </footer>

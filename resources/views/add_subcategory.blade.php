@@ -8,7 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-
 <body>
     @extends('layout')
 
@@ -27,20 +26,19 @@
                 <div class="card">
                     <div class="card-header text-center">Add Subcategory</div>
                     <div class="card-body">
-                        <form action="{{ route('subcategory.store') }}" method="POST"> <!-- Corrected method to POST -->
+                        <form action="{{ route('subcategory.store') }}" method="POST" enctype="multipart/form-data"> <!-- Add enctype attribute -->
                             @csrf
+<<<<<<< HEAD
                             {{-- <div class="mb-3">
                                 <label for="subCategoryId" class="form-label">Subcategory ID</label>
                                 <input type="number" class="form-control" id="subCategoryId" name="subCategoryId">
                             </div> --}}
+=======
+>>>>>>> f963cae (first commit)
                             <div class="mb-3">
                                 <label for="subCategoryName" class="form-label">Subcategory Name</label>
                                 <input type="text" class="form-control" id="subCategoryName" name="subCategoryName" required>
                             </div>
-                            {{-- <div class="mb-3">
-                                <label for="categoryId" class="form-label">Category ID</label>
-                                <input type="number" class="form-control" id="categoryId" name="categoryId" required>
-                            </div> --}}
 
                             <div class="mb-3">
                                 <label for="categoryId" class="form-label">Category</label>
@@ -51,6 +49,13 @@
                                     @endforeach
                                 </select>
                             </div>
+
+                            <!-- Image Upload Field -->
+                            <div class="mb-3">
+                                <label for="subCategoryImage" class="form-label">Subcategory Image</label>
+                                <input type="file" class="form-control" id="subCategoryImage" name="subCategoryImage" accept="image/*" required>
+                            </div>
+
                             <button type="submit" class="btn btn-primary">Add Subcategory</button>
                         </form>
                     </div>

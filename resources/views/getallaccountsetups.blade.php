@@ -28,7 +28,11 @@
         <a href="{{ url('addcoupon') }}" class="btn btn-primary">Add Coupon</a>
      </div>  --}}
       
+<<<<<<< HEAD
         <table class="table">
+=======
+        <table class="table table-responsive">
+>>>>>>> f963cae (first commit)
             <thead>
                 <tr>
                    
@@ -38,6 +42,11 @@
                     <th>bankName</th>
                     <th>branchName</th>
                     <th>accountNumber</th>
+<<<<<<< HEAD
+=======
+                     <th>vendorName</th>
+                       <th>emailIdPlusMobileNo</th>
+>>>>>>> f963cae (first commit)
                     <th>View</th>
                      <th>Delete</th> 
                     
@@ -65,7 +74,16 @@
                         <td>
                             <h5 class="card-title">{{ $data['accountNumber'] }}</h5>
                         </td>
+<<<<<<< HEAD
                       
+=======
+                          <td>
+                            <h5 class="card-title">{{ $data['vendorName'] }}</h5>
+                        </td>
+                          <td>
+                            <h5 class="card-title">{{ $data['emailIdPlusMobileNo'] }}</h5>
+                        </td>
+>>>>>>> f963cae (first commit)
                         <td>
                             <a href="{{ url('getallaccountsetup/'.$data['paySetupId']) }}" class=" btn btn-primary">
 

@@ -5,6 +5,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 
 class CategoriesController extends Controller
 {
@@ -93,10 +95,14 @@ public function updateCategory(Request $request, $id)
 
         if ($response->successful()) {
 
+<<<<<<< HEAD
             return redirect('category')->with('success', 'Category updated successfully');
+=======
+           return response()->json(['success' => true, 'message' => 'Category updated successfully']);
+>>>>>>> f963cae (first commit)
 
         } else {
-            return redirect()->back()->with('error', 'Failed to update category');
+           return response()->json(['success' => false, 'message' => 'Failed to update category'], 400);
         }
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'Error updating category');
@@ -284,12 +290,13 @@ public function storeCategory(Request $request)
 // PRODUCT IN APPROVAL
 
 
-public function productInApproval(){
+public function productInApproval(Request $request){
     try {
         $response = Http::withOptions(['verify' => base_path('cacert.pem')])
             ->get('https://crowdrobapi.tech/api/Product/GetAllProductInApproval');
 
         if ($response->successful()) {
+<<<<<<< HEAD
             $products = $response->json();
             $username = session('username');
             return view('productinapproval', ['products' => $products], compact('username'));
@@ -299,6 +306,30 @@ public function productInApproval(){
             $message = "Approval Product Is Not Available";
             $username = session('username');
             return view('productinapproval', compact('products', 'message', 'username'));
+=======
+            $productapproval = $response->json();
+            
+            
+             //   
+
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $itemCollection = collect($productapproval);
+            $perPage = 10;
+            $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+            $paginatedItems= new LengthAwarePaginator($currentPageItems , count($itemCollection), $perPage);
+            $paginatedItems->setPath($request->url());
+
+            // 
+            
+            $username = session('username');
+            return view('productinapproval', ['productapproval' => $paginatedItems], compact('username'));
+        } elseif ($response->status() === 404) {
+            // Handle 404 Not Found by passing an empty array and a message
+            $productapproval = [];
+            $message = "Approval Product Is Not Available";
+            $username = session('username');
+            return view('productinapproval', compact('productapproval', 'message', 'username'));
+>>>>>>> f963cae (first commit)
         } else {
             return view('api.error');
         }
@@ -316,10 +347,9 @@ public function approveProduct($productId)
         ->get($url);
 
     if ($response->successful()) {
-        return redirect("allproducts")->with('success', 'Product Approved successfully');
-        
+        return response()->json(['success' => true, 'message' => 'Product approved successfully']);
     } else {
-        return view('api.error');
+        return response()->json(['success' => false, 'message' => 'Failed to approve product'], 500);
     }
 }
 
@@ -330,6 +360,7 @@ public function CancelledApproval($productId)
     $response = Http::withOptions(['verify' => base_path('cacert.pem')])
         ->get($url);
 
+<<<<<<< HEAD
     if ($response->successful()) {
         return redirect("productinapproval")->with('success', 'Product Approved Canceled successfully');
         
@@ -338,6 +369,64 @@ public function CancelledApproval($productId)
     }
 }
 
+=======
+     if ($response->successful()) {
+        return response()->json(['success' => true, 'message' => 'Product approval canceled successfully']);
+    } else {
+        return response()->json(['success' => false, 'message' => 'Failed to cancel product approval'], 500);
+    }
+}
+
+
+// 
+
+public function bulkApprove(Request $request)
+{
+    $ids = $request->input('ids');
+
+    if (!$ids) {
+        return response()->json(['success' => false, 'message' => 'No product IDs provided'], 400);
+    }
+
+    foreach ($ids as $productId) {
+        $url = "https://crowdrobapi.tech/api/Product/ProductApprovalByProductId?ProductId=$productId";
+
+        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->get($url);
+
+        if (!$response->successful()) {
+            \Log::error("Error approving product: {$productId}, API response: " . $response->body());
+            return response()->json(['success' => false, 'message' => 'Failed to approve product: ' . $productId], 500);
+        }
+    }
+
+    return response()->json(['success' => true, 'message' => 'Products approved successfully']);
+}
+
+public function bulkCancelApprove(Request $request)
+{
+    $ids = $request->input('ids');
+
+    if (!$ids) {
+        return response()->json(['success' => false, 'message' => 'No product IDs provided'], 400);
+    }
+
+    foreach ($ids as $productId) {
+        $url = "https://crowdrobapi.tech/api/Product/ProductCancelledApprovalByProductId?ProductId=$productId";
+
+        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->get($url);
+
+        if (!$response->successful()) {
+            \Log::error("Error canceling approval for product: {$productId}, API response: " . $response->body());
+            return response()->json(['success' => false, 'message' => 'Failed to cancel approval for product: ' . $productId], 500);
+        }
+    }
+
+    return response()->json(['success' => true, 'message' => 'Products approval canceled successfully']);
+}
+
+>>>>>>> f963cae (first commit)
 
 
 // Add Careosel
@@ -759,8 +848,95 @@ public function DeleteSize($id){
     
     }
     
+<<<<<<< HEAD
     }
 
+=======
+    
+    
+    }
+    
+    
+     public function editSubcategory($id)
+    {
+        try {
+            // Fetch subcategory data from the API with SSL verification
+            $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+                ->get("https://crowdrobapi.tech/api/SubCategory/GetSubCategoryById?subCategoryId={$id}");
+    
+            if ($response->successful()) {
+                $subcategory = $response->json(); // Get the data from API response
+                return view('subcategory-edit', compact('subcategory'));
+            } else {
+                return back()->with('error', 'Failed to fetch subcategory data.');
+            }
+        } catch (\Exception $e) {
+            return back()->with('error', 'An error occurred. Please try again later.');
+        }
+    }
+
+    // Method to update subcategory data
+    public function updateSubcategory(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'subCategoryName' => 'required|string',
+            'categoryId' => 'required|integer',
+            'subCategoryImage' => 'nullable|image|max:2048', // Validate image if provided
+        ]);
+    
+        // Handle image upload and convert to base64 if provided
+        if ($request->hasFile('subCategoryImage')) {
+            $file = $request->file('subCategoryImage');
+            $imageData = base64_encode(file_get_contents($file));
+            $validatedData['subCategoryImage'] = 'data:image/jpeg;base64,' . $imageData;
+        } else {
+            $validatedData['subCategoryImage'] = $request->input('existingImage'); // Keep the existing image
+        }
+    
+        try {
+            $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+                ->put("https://crowdrobapi.tech/api/SubCategory/UpdateSubCategoryById", [
+                    'subCategoryId' => $id,
+                    'subCategoryName' => $validatedData['subCategoryName'],
+                    'categoryId' => $validatedData['categoryId'],
+                    'subCategoryImage' => $validatedData['subCategoryImage'],
+                ]);
+    
+            if ($response->successful()) {
+                // return redirect('/subcategory')->with('success', 'Subcategory updated successfully');
+                 return response()->json(['success' => true, 'message' => 'Category updated successfully']);
+            } else {
+                // return back()->with('error', 'Failed to update subcategory. Please try again.');
+                  return response()->json(['success' => false, 'message' => 'Failed to update category'], 400);
+            }
+        } catch (\Exception $e) {
+            return back()->with('error', 'An error occurred. Please try again later.');
+        }
+    }
+    
+public function AddTask(Request $request){
+
+    try {
+        $data = [
+            'taskText' => $request->input('taskText'),
+            'taskToBeDone' =>  $request->input('taskToBeDone'),
+        ];
+
+        $response = Http::withOptions(['verify' => base_path('cacert.pem')])
+            ->post('https://cd1.crowdrob.com/api/TaskTable/AddTask', $data);
+
+        if ($response->successful()) {
+            return redirect()->back()->with('success', 'Task Added Successfully');
+
+        } else {
+            return view('api.error');
+        }
+    } catch (RequestException $e) {
+        return view('api.error');
+    }
+
+   }
+>>>>>>> f963cae (first commit)
 
 }
 

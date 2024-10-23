@@ -36,11 +36,16 @@
             <thead>
                 <tr>
                     <th>subCategoryId</th>
+                     <th>Image</th>
                     <th>subCategoryName</th>
                     <th>categoryId</th>
                     {{-- <th>category</th> --}}
+<<<<<<< HEAD
                   
+=======
+>>>>>>> f963cae (first commit)
                   
+                    <th>Edit</th>
                     {{-- <th>Created Date</th> --}}
                     {{-- <th>Action</th> --}}
                     <th>Delete</th>
@@ -52,14 +57,23 @@
                         <td>
                             <p class="card-text"> {{ $product['subCategoryId'] }}</p>
                         </td>
-                       
+                        
+        <td>
+          <img src={{ $product['subCategoryImage'] }} width="80px" />
+        </td>
                         <td>
                             <h5 class="card-title">{{ $product['subCategoryName'] }}</h5>
                         </td>
                         <td>
                             <h5 class="card-title">{{ $product['categoryId'] }}</h5>
                         </td>
+<<<<<<< HEAD
                         
+=======
+                          <td>
+                            <a href="{{ route('subcategory.edit', $product['subCategoryId']) }}" class="btn btn-primary">Update</a> <!-- Link to the update form route with subCategoryId -->
+                        </td>
+>>>>>>> f963cae (first commit)
                         {{-- <td>
                             <p class="card-text"> {{ $product['category'] }}</p>
                         </td> --}}

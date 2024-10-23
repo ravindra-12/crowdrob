@@ -59,7 +59,11 @@
 				<div class="container">
 
 					<div class="row col-mb-50">
+<<<<<<< HEAD
 						<div class="col-md-7">
+=======
+						<div class="col-12">
+>>>>>>> f963cae (first commit)
 							<div class="fancy-title title-bottom-border">
 								<h3>Welcome to Crowdrob Careers</h3>
 							</div>
@@ -69,12 +73,18 @@
                            
 
 							
+<<<<<<< HEAD
 							<a href="#" data-scrollto="#job-apply" class="button button-3d button-black m-0">Apply Now</a>
+=======
+							 <a href="mailto:contactus@crowdrob.com" class="button button-3d button-black m-0">Apply Now</a>
+
+>>>>>>> f963cae (first commit)
 
 							<div class="divider divider-sm"><i class="bi-star-fill"></i></div>
 
 						</div>
 
+<<<<<<< HEAD
 						<div class="col-md-5">
 							<div id="job-apply" class="heading-block highlight-me">
 								<h2>Apply Now</h2>
@@ -173,6 +183,9 @@
 							</div>
 
 						</div>
+=======
+						
+>>>>>>> f963cae (first commit)
 					</div>
 
 				</div>

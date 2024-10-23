@@ -28,7 +28,14 @@
         <a href="{{ url('addcoupon') }}" class="btn btn-primary">Add Coupon</a>
      </div>  --}}
       
+<<<<<<< HEAD
         <table class="table">
+=======
+      
+      
+      
+        <table class="table table-responsive">
+>>>>>>> f963cae (first commit)
             <thead>
                 <tr>
                    
@@ -36,8 +43,15 @@
                     <th>vendorId</th>
                     <th>widthrawAmount</th>
                     <th>mobileNumber</th>
+<<<<<<< HEAD
                     <th>bankDetails</th>
                     <th>createdDate</th>
+=======
+                      <th>vendorName</th>
+                    <th>bankDetails</th>
+                    <th>emailIdPlusMobileNo</th>
+                     <th>createdDate</th>
+>>>>>>> f963cae (first commit)
                     <th>Delete</th>
                     
                 </tr>
@@ -58,9 +72,21 @@
                         <td>
                             <h5 class="card-title">{{ $data['mobileNumber'] }}</h5>
                         </td>
+<<<<<<< HEAD
                         <td>
                             <h5 class="card-title">{{ $data['bankDetails'] }}</h5>
                         </td>
+=======
+                         <td>
+                            <h5 class="card-title">{{ $data['vendorName'] }}</h5>
+                        </td>
+                        <td>
+                            <h5 class="card-title">{{ $data['bankDetails'] }}</h5>
+                        </td>
+                          <td>
+                            <h5 class="card-title">{{ $data['emailIdPlusMobileNo'] }}</h5>
+                        </td>
+>>>>>>> f963cae (first commit)
                         <td>
                             <h5 class="card-title">{{  \Carbon\Carbon::parse($data['createdDate'])->format('d/m/Y H:i') }}</h5>
                         </td>

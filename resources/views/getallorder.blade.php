@@ -7,7 +7,19 @@
             <div class="card-body" style="background-color: #00ced1;">
                 <h3 class="text-center">Get All Orders</h3>
             </div>
+<<<<<<< HEAD
         </div>
+=======
+
+        </div>
+        <div>
+            <form action="{{ route('getallorder') }}" method="GET" class="mb-4">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search By Order ID" class="form-control">
+                <button type="submit" class="btn btn-primary mt-2">Search</button>
+                <a href="{{ route('getallorder') }}" class="btn btn-secondary">Reset</a>
+            </form>
+          </div>
+>>>>>>> f963cae (first commit)
     </div>
     <table class="table table-responsive">
         <thead>
@@ -24,6 +36,10 @@
                 <th>deliveryTime</th>
                 <th>deliverySlot</th>
                 <th>Edit</th>
+<<<<<<< HEAD
+=======
+                <th>Invoice</th>
+>>>>>>> f963cae (first commit)
             </tr>
         </thead>
         <tbody>
@@ -79,6 +95,13 @@
                     <td>
                         <a href="{{ url('/updatestatus/' . $order['orderID']) }}" class="btn btn-primary">Update</a> <!-- Link to the updateproduct route with productId -->
                     </td>
+<<<<<<< HEAD
+=======
+                    <td>
+                        <a href="{{ route('generate.pdf', ['orderId' => $order['orderID']]) }}" class="btn btn-primary">
+                            Invoice
+                    </td>
+>>>>>>> f963cae (first commit)
                     {{-- <td>
                         <a href="{{ url('/update-status/' . $order['orderID']) }}" class="btn btn-primary">Edit</a> <!-- Link to the updateproduct route with productId -->
                     </td> --}}

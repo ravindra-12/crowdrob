@@ -149,6 +149,7 @@
                                     <div class="container">
                                         <div class="slider-caption" style="max-width: 450px">
                                             <div>
+<<<<<<< HEAD
                                                 <h2 class="text-transform-none" data-animate="fadeInUp">Welcome to Crowdrob</h2>
                                                 <p class="d-none d-sm-block" style="font-size: 17px;" data-animate="fadeInUp" data-delay="200">At Crowdrob, we offer a seamless online shopping experience, empowering businesses to reach a global audience and providing shoppers with a wide variety of high-quality products.</p>
                                                 <a href="#" data-animate="fadeInUp" data-delay="400" class="btn btn-lg btn-light mt-4">Know More</a>
@@ -156,6 +157,17 @@
                                         </div>
                                     </div>
                                     <div class="swiper-slide-bg" style="background-image: url('https://img.freepik.com/free-photo/young-asian-woman-with-shopping-bags-megaphone-blue_155003-44339.jpg?t=st=1720680003~exp=1720683603~hmac=91fe26b03a75252e62dc7c1518e1c4872ddfd87ee53cfb02c3e6cbbce4846a0d&w=996');"></div>
+=======
+                                                <h2 class="text-transform-none" data-animate="fadeInUp">Starting Rs. 700/-</h2>
+                                                <p class="d-none d-sm-block" style="font-size: 17px;" data-animate="fadeInUp" data-delay="200">Get up to 50% off this Diwali on top products! Shop now for amazing discounts and festive deals!</p>
+                                                <a href="/diwalioffer" data-animate="fadeInUp" data-delay="400" class="btn btn-lg btn-danger mt-4">Shop Now</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="/diwalioffer">
+                                    <div class="swiper-slide-bg" style="background-image: url('{{asset('images/long banner_3.jpg')}}');"></div>
+                                </a>
+>>>>>>> f963cae (first commit)
                                 </div>
                                 <div class="swiper-slide dark">
                                     <div class="container">
@@ -306,6 +318,25 @@
 
                                 {{-- End Popular Category --}}
 
+<<<<<<< HEAD
+=======
+                                <div class="container my-5">
+                                    <div class="promo promo-dark promo-uppercase p-4 p-md-5 mb-5">
+                                        <div class="row align-items-center">
+                                            <div class="col-12 col-lg">
+                                                <h3>Diwali discounts <span class="text-warning"> on footwear, clothes, and electronics! </span> Celebrate with great deals!</h3>
+                                            </div>
+                                            <div class="col-12 col-lg-auto mt-4 mt-lg-0">
+                                               
+                                                    <a href="/diwalioffer"
+                                                    class=" bg-danger text-white rounded mx-2 px-3 py-2 text-transform-none ls-0 shadow-sm"
+                                                    <i class="fa-light fa-cart-shopping"></i>
+                                                   Shop Now</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+>>>>>>> f963cae (first commit)
                
                 {{-- <section id="content">
                     <div class="content-wrap py-0">

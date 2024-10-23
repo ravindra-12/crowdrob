@@ -21,19 +21,46 @@
           </div>
           </div>
         {{--  --}}
+<<<<<<< HEAD
         <div>
             <form action="{{ route('UpdateAllProductDeals') }}" method="GET" class="mb-4">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Store" class="form-control">
+=======
+        <div class="container">
+            <form action="{{ route('UpdateAllProductDeals') }}" method="GET" class="mb-4">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search By ProductName , VendorName" class="form-control">
+>>>>>>> f963cae (first commit)
                 <button type="submit" class="btn btn-primary mt-2">Search</button>
                 <a href="{{ route('UpdateAllProductDeals') }}" class="btn btn-secondary">Reset</a>
             </form>
           </div>
        
         {{--  --}}
+<<<<<<< HEAD
+=======
+        <div class="container">
+            <form action="{{ route('UpdateAllProductDeals') }}" method="GET" class="mb-4" id="filterForm">
+                <select name="category" id="category" class="form-control mb-2">
+                    <option value="">Select Category</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category['categoryId'] }}" {{ request('category') == $category['categoryId'] ? 'selected' : '' }}>
+                            {{ $category['categoryName'] }}
+                        </option>
+                    @endforeach
+                </select>
+    
+               
+    
+                <button type="submit" class="btn btn-primary mt-2">Filter</button>
+                <a href="{{ route('UpdateAllProductDeals') }}" class="btn btn-secondary mt-2">Reset</a>
+            </form>
+        </div>
+>>>>>>> f963cae (first commit)
         <table class="table table-responsive">
             <thead>
                 <tr>
                     <th>prodectTitle</th>
+                    <th>vendorName</th>
                     <th>prodectImage</th>
                     <th>isTopDeal</th>
                     <th>istopTrending</th>
@@ -55,6 +82,10 @@
                     <tr>
                         <td>
                             <p class="card-text"> {{ $product['prodectTitle'] }}</p>
+                        </td>
+
+                        <td>
+                            <p class="card-text"> {{ $product['vendorName'] }}</p>
                         </td>
                         
                         <td> 
@@ -106,6 +137,10 @@
                 @endforeach
             </tbody>
         </table>
+        <div class="d-flex justify-content-center">
+            <!-- Pass query parameters with pagination links -->
+            {{ $products->appends(request()->query())->links('pagination::bootstrap-4') }}
+        </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
